@@ -1,0 +1,22 @@
+{
+  "name": "emotetracker",
+  "version": "1.0.0",
+  "description": "Tracks emote usage",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git"
+  },
+  "keywords": [
+    "emote",
+    "tracker"
+  ],
+  "author": "sinsin",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.2.0"
+  }
+}
