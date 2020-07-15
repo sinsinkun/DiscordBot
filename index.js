@@ -2,6 +2,8 @@ const Discord = require('discord.js');
 const { prefix, token } = require('./config.json')
 const client = new Discord.Client();
 
+const halfAnYearInMilliseconds = 15778476000;
+
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -15,7 +17,7 @@ client.on('message', async message => {
 			let customEmojis = getCustomEmojis(message);
 			message.channel.send(`You degenerates are using ${customEmojis.length} custom emojis!`);
 			let postHistory = await getPostHistory(message);
-			message.channel.send(`You degenerates have ${postHistory.size} posts up to now!`)
+			message.channel.send(`You degenerates have ${postHistory} posts since half an year ago!`)
 		}
 	}
 });
@@ -28,5 +30,23 @@ function getCustomEmojis(message) {
 }
 
 async function getPostHistory(message) {
-	return message.channel.messages.fetch()
+	let messageBatch;
+	let messages = [];
+	const timeLimit = new Date().getTime() - halfAnYearInMilliseconds;
+	do {
+		if (messageBatch && messageBatch.size === 100){
+			let lastMessage = messageBatch.last();
+			if (lastMessage.createdTimestamp < timeLimit) {
+				break;
+			}
+			messageBatch = await message.channel.messages.fetch({limit:100, before:lastMessage.id})
+			messages.push(...messageBatch)
+		}
+		else {
+			messageBatch = await message.channel.messages.fetch({limit:100})
+			messages.push(...messageBatch)
+		}
+	} while (messageBatch && messageBatch.size === 100)
+
+	return messages.length;
 }
