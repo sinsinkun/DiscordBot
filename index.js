@@ -14,17 +14,19 @@ client.on('message', async message => {
     if (message.content == `${prefix}emojiUsage`){
 		message.channel.send("WIP");
 		if (message.guild.available && message.channel.type === "text") {
-			let customEmojis = getCustomEmojis(message);
+			const customEmojis = getCustomEmojis(message);
 			message.channel.send(`You degenerates are using ${customEmojis.length} custom emojis!`);
-			let postHistory = await getPostHistory(message);
-			message.channel.send(`You degenerates have ${postHistory} posts since half an year ago!`)
+			const postHistory = await getPostHistory(message);
+			message.channel.send(`You degenerates have ${postHistory.length} posts since half an year ago!`);
+			const emojisOrderedByUsage = tabulateEmojis(customEmojis, postHistory);
+			message.channel.send(emojisOrderedByUsage);
 		}
 	}
 });
 
 function getCustomEmojis(message) {
 	let customEmojis = message.guild.emojis.cache.map(emoji => {
-		return `:${emoji.name}:${emoji.id}`;
+		return { name: `:${emoji.name}:${emoji.id}`, value: "0"};
 	})
 	return customEmojis;
 }
@@ -48,5 +50,20 @@ async function getPostHistory(message) {
 		}
 	} while (messageBatch && messageBatch.size === 100)
 
-	return messages.length;
+	return messages;
+}
+
+function tabulateEmojis(emojis, postHistory) {
+	postHistory.forEach(message => {
+		emojis.forEach(emoji => {
+			if (message[1].content.includes(emoji.name)){
+				emoji.value = (parseInt(emoji.value) + 1).toString();
+			}
+		})
+	})
+	emojis = emojis.sort((a,b) => b.value - a.value)
+	return new Discord.MessageEmbed()
+					.setColor('#0099ff')
+					.setTitle('Custom server emojis ordered by most used')
+					.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
 }
