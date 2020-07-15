@@ -1,7 +1,6 @@
 const Discord = require('discord.js');
 const { prefix, token } = require('./config.json')
 const client = new Discord.Client();
-
 const halfAnYearInMilliseconds = 15778476000;
 
 client.once('ready', () => {
@@ -11,8 +10,29 @@ client.once('ready', () => {
 client.login(token);
 
 client.on('message', async message => {
-    if (message.content == `${prefix}emojiUsage`){
-		message.channel.send("WIP");
+	//full chat log
+	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
+
+	//parsing commands
+	if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+	const args = message.content.slice(prefix.length).trim().split(/ +/);
+	const command = args.shift().toUpperCase();
+	
+	//COUNT command
+	if (command == 'COUNT') {
+		const countNum = args.length;
+		if (countNum === 0) message.channel.send('Nothing to count');
+		else {
+			for (i=0; i<countNum; i++) {
+				var emoCount = await countEmoteUses (message, args[i]);
+				message.channel.send('Number of instances of ' + args[i] + ': ' + emoCount);
+			}
+		}
+	}
+
+	//EMOJIUSAGE command
+	if (command == 'EMOJIUSAGE') {
 		if (message.guild.available && message.channel.type === "text") {
 			const customEmojis = getCustomEmojis(message);
 			message.channel.send(`You degenerates are using ${customEmojis.length} custom emojis!`);
@@ -24,6 +44,33 @@ client.on('message', async message => {
 	}
 });
 
+//Count number of uses for an emote
+async function countEmoteUses (msg, emote) {
+	var emoCounter = 0;
+	var msgManager = msg.channel.messages;
+	var lastMsg = msg;
+	const dateLimit = new Date().getTime() - new Date(halfAnYearInMilliseconds);
+
+	console.log('date limit: ' + dateLimit);
+
+	do {
+		var msgList = await msgManager.fetch({limit:100, before:lastMsg.id});
+		msgList.each( message => {
+			if (message.content.includes(emote)) emoCounter++;
+		})
+		lastMsg = msgList.last();
+
+		console.log('Last message sent at: ' + lastMsg.createdAt);
+		console.log('emoCounter: ' + emoCounter);
+
+	} while (lastMsg.createdAt > dateLimit);
+
+	console.log('Exited loop. Last message sent: ' + lastMsg.createdAt);
+	
+	return emoCounter;
+}
+
+/*-- EMOJIUSAGE stuff --*/
 function getCustomEmojis(message) {
 	let customEmojis = message.guild.emojis.cache.map(emoji => {
 		return { name: `:${emoji.name}:${emoji.id}`, value: "0"};
