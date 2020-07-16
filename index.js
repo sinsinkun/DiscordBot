@@ -113,8 +113,9 @@ async function getPostHistory(message) {
 function tabulateEmojis(emojis, postHistory) {
 	postHistory.forEach(message => {
 		emojis.forEach(emoji => {
-			if (message[1].content.includes(emoji.name)){
-				emoji.value = (parseInt(emoji.value) + 1).toString();
+			const count = occurrences(message[1].content, emoji.name, false);
+			if (count > 1){
+				emoji.value = (parseInt(emoji.value) + (count > 3 ? 3 : count)).toString();
 			}
 		})
 	})
@@ -123,4 +124,34 @@ function tabulateEmojis(emojis, postHistory) {
 					.setColor('#0099ff')
 					.setTitle('Custom server emojis ordered by most used')
 					.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
+}
+
+/** Function that count occurrences of a substring in a string;
+ * @param {String} string               The string
+ * @param {String} subString            The sub string to search for
+ * @param {Boolean} [allowOverlapping]  Optional. (Default:false)
+ *
+ * @author Vitim.us https://gist.github.com/victornpb/7736865
+ * @see Unit Test https://jsfiddle.net/Victornpb/5axuh96u/
+ * @see http://stackoverflow.com/questions/4009756/how-to-count-string-occurrence-in-string/7924240#7924240
+ */
+function occurrences(string, subString, allowOverlapping) {
+
+    string += "";
+    subString += "";
+    if (subString.length <= 0) return (string.length + 1);
+
+    var n = 0,
+        pos = 0,
+        step = allowOverlapping ? 1 : subString.length;
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        pos = string.indexOf(subString, pos);
+        if (pos >= 0) {
+            ++n;
+            pos += step;
+        } else break;
+    }
+    return n;
 }
