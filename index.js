@@ -19,6 +19,16 @@ client.on('message', async message => {
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toUpperCase();
 	
+	//ECHO command
+	if (command == 'ECHO') {
+		if (args.length < 1) message.channel.send('echo');
+		else {
+			let argsString = '';
+			args.forEach(arg => argsString = argsString + ' ' + arg);
+			message.channel.send(argsString);
+		}
+	}
+	
 	//COUNT command
 	if (command == 'COUNT') {
 		const countNum = args.length;
