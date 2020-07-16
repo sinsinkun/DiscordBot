@@ -34,7 +34,7 @@ client.on('message', async message => {
 		const countNum = args.length;
 		if (countNum === 0) message.channel.send('Nothing to count');
 		else {
-			for (i=0; i<countNum; i++) {
+			for (let i=0; i<countNum; i++) {
 				var emoCount = await countEmoteUses (message, args[i]);
 				message.channel.send('Number of instances of ' + args[i] + ': ' + emoCount);
 			}
