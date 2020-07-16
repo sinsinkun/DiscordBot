@@ -13,6 +13,10 @@ client.on('message', async message => {
 	//full chat log
 	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
+	if (spammingEmojis(message)) {
+		message.channel.send(`oi m8 fvk 0ff wit ur cheeky shit emoji spam ${message.author.toString()}`)
+	}
+
 	//parsing commands
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -124,6 +128,17 @@ function tabulateEmojis(emojis, postHistory) {
 					.setColor('#0099ff')
 					.setTitle('Custom server emojis ordered by most used')
 					.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
+}
+
+function spammingEmojis(message) {
+	const emojis = getCustomEmojis(message);
+	for (let i=0;i<emojis.length;i++){
+		let count = occurrences(message.content, emojis[i].name, false);
+		if (count >= 3) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /** Function that count occurrences of a substring in a string;
