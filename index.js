@@ -1,14 +1,9 @@
 const Discord = require('discord.js');
-const emojis = require('./src/helpers/emojis')
-const glob = require('glob');
+const commandList = require('./src/commands/commandList.json');
+const emojis = require('./src/helpers/emojis.js');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
-
-let commands = {};
-glob.sync('./src/commands/*.js').forEach( function( file ) {
-	commands = {...commands, ...require(file)}
-});
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -30,18 +25,12 @@ client.on('message', async message => {
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toUpperCase();
 	
-	//ECHO command
-	if (command == 'ECHO') {
-		commands.echo(message, args)
-	}
-	
-	//COUNT command
-	if (command == 'COUNT') {
-		await commands.count(message, args, halfAnYearInMilliseconds)
-	}
-
-	//EMOJIUSAGE command
-	if (command == 'EMOJIUSAGE') {
-		await commands.emojiUsage(message, halfAnYearInMilliseconds)
+	//Look up & execute command in command list
+	for (i=0; i<commandList.length; i++) {
+		if (command == commandList[i].name) {
+			console.log('running ' + commandList[i].name + ' command');
+			await eval(commandList[i].code);
+			break;
+		}
 	}
 });

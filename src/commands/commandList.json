@@ -1,0 +1,14 @@
+[
+    {
+        "name" : "ECHO",
+        "code" : "const echoF = require('./src/commands/echo.js'); echoF.echo(message, args);"
+    },
+    {
+        "name" : "COUNT",
+        "code" : "const countF = require('./src/commands/count.js'); countF.count(message, args, halfAnYearInMilliseconds);"
+    },
+    {
+        "name" : "EMOJIUSAGE",
+        "code" : "const emojiusageF = require('./src/commands/emojiusage.js'); emojiusageF.emojiusage(message, halfAnYearInMilliseconds);"
+    }
+]
