@@ -10,7 +10,6 @@ client.once('ready', () => {
 });
 
 client.login(process.env.BOT_TOKEN);
-//client.login(require('./config.json').token);
 
 client.on('message', async message => {
 	//full chat log
