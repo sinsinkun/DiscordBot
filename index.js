@@ -9,7 +9,8 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-client.login(require('./config.json').token);
+client.login(process.env.BOT_TOKEN);
+//client.login(require('./config.json').token);
 
 client.on('message', async message => {
 	//full chat log
