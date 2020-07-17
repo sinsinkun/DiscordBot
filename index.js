@@ -27,12 +27,7 @@ client.on('message', async message => {
 	
 	//ECHO command
 	if (command == 'ECHO') {
-		if (args.length < 1) message.channel.send('echo');
-		else {
-			let argsString = '';
-			args.forEach(arg => argsString = argsString + ' ' + arg);
-			message.channel.send(argsString);
-		}
+		commands.echo(message, args)
 	}
 	
 	//COUNT command
