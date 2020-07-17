@@ -9,6 +9,6 @@
     },
     {
         "name" : "EMOJIUSAGE",
-        "code" : "const emojiusageF = require('./src/commands/emojiusage.js'); emojiusageF.emojiusage(message, halfAnYearInMilliseconds);"
+        "code" : "const emojiUsageF = require('./src/commands/emojiusage.js'); emojiUsageF.emojiUsage(message, halfAnYearInMilliseconds);"
     }
 ]
