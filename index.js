@@ -1,9 +1,14 @@
 const Discord = require('discord.js');
-const commands = require('./src/commands/commands')
 const emojis = require('./src/helpers/emojis')
+const glob = require('glob');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
+
+let commands = {};
+glob.sync('./src/commands/*.js').forEach( function( file ) {
+	commands = {...commands, ...require(file)}
+});
 
 client.once('ready', () => {
 	console.log('Ready!');
