@@ -1,4 +1,4 @@
-function echo(message, args){
+function execute({message, args}){
     if (args.length < 1) message.channel.send('echo');
     else {
         let argsString = '';
@@ -7,4 +7,4 @@ function echo(message, args){
     }
 }
 
-module.exports = { echo }
+module.exports = { echo: { execute } }
