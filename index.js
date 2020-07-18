@@ -1,15 +1,9 @@
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
-const glob = require('glob');
 const emojis = require('./src/helpers/emojis.js');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
-
-let commands = {};
-glob.sync('./src/commands/*.js').forEach( function( file ) {
-	commands = {...commands, ...require(file)}
-});
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -34,14 +28,15 @@ client.on('message', async message => {
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
 	
-	const commandList = Object.keys(commands);
-	//Look up & execute command in command list
-	for (let i=0; i<commandList.length; i++) {
-		if (command == commandList[i]) {
-			console.log('running ' + command + ' command');
-			await commands[command].execute({args, message, timeInEpoch: halfAnYearInMilliseconds, user})
-			break;
-		}
+	//Look up, confirm existence, & execute command
+	try {
+		const commandFile = require(`./src/commands/${command}.js`);
+		console.log ('running command: ' + commandFile.name);
+		console.log ('command description: ' + commandFile.description);
+		await commandFile.execute ({message, args, timeInEpoch:halfAnYearInMilliseconds});
+	} catch (error) {
+		console.log (`Error: ${error}`);
+		message.channel.send('Cannot find command');
 	}
 });
 

@@ -1,4 +1,7 @@
-function execute({ message, args }){
+const name = 'echo';
+const description = 'Echoes what the user inputs. Defaults to echo.';
+
+function echo({ message, args }){
     if (args.length < 1) message.channel.send('echo');
     else {
         let argsString = '';
@@ -7,4 +10,6 @@ function execute({ message, args }){
     }
 }
 
-module.exports = { echo: { execute } }
+module.exports.name = name;
+module.exports.description = description;
+module.exports.execute = echo;

@@ -1,7 +1,9 @@
+const name = 'emoji usage';
+const description = 'Tallies top 50 emojis used over the last 6 months';
 const { getPostHistory } = require('../helpers/posts')
 const emojis = require('../helpers/emojis')
 
-async function execute({ message, timeInEpoch }) {
+async function emojiUsage({ message, timeInEpoch }) {
     if (message.guild.available && message.channel.type === "text") {
         const customEmojis = emojis.getCustomEmojis(message);
         message.channel.send(`You degenerates are using ${customEmojis.length} custom emojis!`);
@@ -12,4 +14,6 @@ async function execute({ message, timeInEpoch }) {
     }
 }
 
-module.exports = { emojiusage: { execute } };
+module.exports.name = name;
+module.exports.description = description;
+module.exports.execute = emojiUsage;

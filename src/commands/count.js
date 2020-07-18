@@ -1,6 +1,8 @@
+const name = 'count';
+const description = 'Counts the number of uses for an emoji over the last 6 months.';
 const emojis = require('../helpers/emojis')
 
-async function execute({ message, args, timeInEpoch }) {
+async function count({ message, args, timeInEpoch }) {
     const countNum = args.length;
     if (countNum === 0) message.channel.send('Nothing to count');
     else {
@@ -11,4 +13,6 @@ async function execute({ message, args, timeInEpoch }) {
     }
 }
 
-module.exports = { count: { execute } };
+module.exports.name = name;
+module.exports.description = description;
+module.exports.execute = count;
