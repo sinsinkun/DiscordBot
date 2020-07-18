@@ -1,6 +1,6 @@
 const emojis = require('../helpers/emojis')
 
-async function execute({message, args, timeInEpoch}) {
+async function execute({ message, args, timeInEpoch }) {
     const countNum = args.length;
     if (countNum === 0) message.channel.send('Nothing to count');
     else {

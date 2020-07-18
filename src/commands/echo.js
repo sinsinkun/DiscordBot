@@ -1,4 +1,4 @@
-function execute({message, args}){
+function execute({ message, args }){
     if (args.length < 1) message.channel.send('echo');
     else {
         let argsString = '';
