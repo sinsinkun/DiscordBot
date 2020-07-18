@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const DiscordUser = require('./src/common/data/user')
 const glob = require('glob');
 const emojis = require('./src/helpers/emojis.js');
 const prefix = '!';
@@ -35,8 +36,16 @@ client.on('message', async message => {
 	for (let i=0; i<commandList.length; i++) {
 		if (command == commandList[i]) {
 			console.log('running ' + commandList[i].name + ' command');
-			await commands[command].execute({args, message, timeInEpoch: halfAnYearInMilliseconds})
+			const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
+			await createIfUserDoesNotExist(user);
+			await commands[command].execute({args, message, timeInEpoch: halfAnYearInMilliseconds, user})
 			break;
 		}
 	}
 });
+
+async function createIfUserDoesNotExist(user) {
+	if (!(await user.confirmExistence())) {
+		await user.create();
+	}
+}
