@@ -1,7 +1,7 @@
 const { getPostHistory } = require('../helpers/posts')
 const emojis = require('../helpers/emojis')
 
-async function emojiUsage(message, timeInEpoch) {
+async function execute({ message, timeInEpoch }) {
     if (message.guild.available && message.channel.type === "text") {
         const customEmojis = emojis.getCustomEmojis(message);
         message.channel.send(`You degenerates are using ${customEmojis.length} custom emojis!`);
@@ -12,4 +12,4 @@ async function emojiUsage(message, timeInEpoch) {
     }
 }
 
-module.exports = { emojiUsage };
+module.exports = { emojiUsage: { execute } };

@@ -1,9 +1,14 @@
 const Discord = require('discord.js');
-const commandList = require('./src/commands/commandList.json');
+const glob = require('glob');
 const emojis = require('./src/helpers/emojis.js');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
+
+let commands = {};
+glob.sync('./src/commands/*.js').forEach( function( file ) {
+	commands = {...commands, ...require(file)}
+});
 
 client.once('ready', () => {
 	console.log('Ready!');
@@ -23,13 +28,14 @@ client.on('message', async message => {
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
-	const command = args.shift().toUpperCase();
+	const command = args.shift().toLowerCase();
 	
+	const commandList = Object.keys(commands);
 	//Look up & execute command in command list
-	for (i=0; i<commandList.length; i++) {
-		if (command == commandList[i].name) {
+	for (let i=0; i<commandList.length; i++) {
+		if (command == commandList[i]) {
 			console.log('running ' + commandList[i].name + ' command');
-			await eval(commandList[i].code);
+			await commands[command].execute({args, message, timeInEpoch: halfAnYearInMilliseconds})
 			break;
 		}
 	}
