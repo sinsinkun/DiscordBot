@@ -21,10 +21,13 @@ client.on('message', async message => {
 	//full chat log
 	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
+	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
+	await createIfUserDoesNotExist(user);
+	await user.logEmojiUsage(message);
+
 	if (emojis.spammingEmojis(message)) {
 		message.channel.send(`oi m8 fvk 0ff wit ur cheeky shit emoji spam ${message.author.toString()}`)
 	}
-
 	//parsing commands
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -35,9 +38,7 @@ client.on('message', async message => {
 	//Look up & execute command in command list
 	for (let i=0; i<commandList.length; i++) {
 		if (command == commandList[i]) {
-			console.log('running ' + commandList[i].name + ' command');
-			const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
-			await createIfUserDoesNotExist(user);
+			console.log('running ' + command + ' command');
 			await commands[command].execute({args, message, timeInEpoch: halfAnYearInMilliseconds, user})
 			break;
 		}

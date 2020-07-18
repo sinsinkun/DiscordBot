@@ -46,10 +46,14 @@ class DatabaseClient {
 
 			return await this._documentClient.put(params).promise();
 		} catch (e) {
-            console.log(e);
+            console.error(e);
 			throw e;
 		}
-	}
+    }
+    
+    async update(params) {
+        await this._documentClient.update(params).promise();
+    }
     
 }
 
