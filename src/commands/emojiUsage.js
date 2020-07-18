@@ -12,4 +12,4 @@ async function execute({ message, timeInEpoch }) {
     }
 }
 
-module.exports = { emojiUsage: { execute } };
+module.exports = { emojiusage: { execute } };
