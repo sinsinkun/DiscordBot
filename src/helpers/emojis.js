@@ -12,7 +12,7 @@ function tabulateEmojis(emojis, postHistory) {
 	postHistory.forEach(message => {
 		emojis.forEach(emoji => {
 			const count = occurrences(message[1].content, emoji.name, false);
-			if (count > 1){
+			if (count >= 1){
 				emoji.value = (parseInt(emoji.value) + (count > 3 ? 3 : count)).toString();
 			}
 		})
