@@ -24,17 +24,6 @@ function tabulateEmojis(emojis, postHistory) {
 					.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
 }
 
-function spammingEmojis(message) {
-	const emojis = getCustomEmojis(message);
-	for (let i=0;i<emojis.length;i++){
-		let count = occurrences(message.content, emojis[i].name, false);
-		if (count >= 3) {
-			return true;
-		}
-	}
-	return false;
-}
-
 //Count number of uses for an emote
 async function countEmoteUses (msg, emote, timeInEpoch) {
 	var emoCounter = 0;

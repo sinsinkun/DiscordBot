@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
-const emojis = require('./src/helpers/emojis.js');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
@@ -19,9 +18,6 @@ client.on('message', async message => {
 	await createIfUserDoesNotExist(user);
 	await user.logEmojiUsage(message);
 
-	if (emojis.spammingEmojis(message)) {
-		message.channel.send(`oi m8 fvk 0ff wit ur cheeky shit emoji spam ${message.author.toString()}`)
-	}
 	//parsing commands
 	if (!message.content.startsWith(prefix) || message.author.bot) return;
 
