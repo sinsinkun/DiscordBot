@@ -29,6 +29,9 @@ class DiscordUser {
     async getEmojiUsage() {
         const document = await this._db.getById(this._id);
         const array = Object.entries(document.emojiUsage).map(( [k, v] ) => ({ name: k, value: v }));
+        if (!array.length) {
+            throw new Error("This user hasn't used any custom emojis!");
+        }
         array.sort((a,b) => b.value - a.value)
         return new Discord.MessageEmbed()
         .setColor('#0099ff')
