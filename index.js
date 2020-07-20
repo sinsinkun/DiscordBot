@@ -15,24 +15,27 @@ client.on('message', async message => {
 	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
 	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
+	if (message.author.bot) return;
+
+	// log user emoji usage
 	await createIfUserDoesNotExist(user);
 	await user.logEmojiUsage(message);
 
 	//parsing commands
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (!message.content.startsWith(prefix)) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
 	
 	//Look up, confirm existence, & execute command
 	try {
-		const commandFile = require(`./src/commands/${command}.js`);
+		const commandFile = require(`./src/commands/${command}`);
 		console.log ('running command: ' + commandFile.name);
 		console.log ('command description: ' + commandFile.description);
-		await commandFile.execute ({message, args, timeInEpoch:halfAnYearInMilliseconds});
+		await commandFile.execute({message, args, timeInEpoch:halfAnYearInMilliseconds});
 	} catch (error) {
 		console.log (`Error: ${error}`);
-		message.channel.send('Cannot find command');
+		message.channel.send(`Error with command: ${error.message}`);
 	}
 });
 

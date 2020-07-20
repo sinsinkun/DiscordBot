@@ -1,6 +1,7 @@
 const db = require('../clients/dynamodb');
 const emojis = require('../../helpers/emojis');
 const { occurrences } = require('../../helpers/external');
+const Discord = require('discord.js');
 const region = process.env.AWS_DEFAULT_REGION;
 const tableName = process.env.TABLE_NAME;
 
@@ -23,6 +24,19 @@ class DiscordUser {
 
     async confirmExistence() {
         return this._db.getById(this._id);
+    }
+
+    async getEmojiUsage() {
+        const document = await this._db.getById(this._id);
+        const array = Object.entries(document.emojiUsage).map(( [k, v] ) => ({ name: k, value: v }));
+        if (!array.length) {
+            throw new Error("This user hasn't used any custom emojis!");
+        }
+        array.sort((a,b) => b.value - a.value)
+        return new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle(`${this._name}'s most used emojis!`)
+        .addFields(...array.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
     }
 
     async logEmojiUsage(message) {
