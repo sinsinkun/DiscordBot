@@ -15,11 +15,14 @@ client.on('message', async message => {
 	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
 	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
+	if (message.author.bot) return;
+
+	// log user emoji usage
 	await createIfUserDoesNotExist(user);
 	await user.logEmojiUsage(message);
 
 	//parsing commands
-	if (!message.content.startsWith(prefix) || message.author.bot) return;
+	if (!message.content.startsWith(prefix)) return;
 
 	const args = message.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
