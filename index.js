@@ -26,13 +26,13 @@ client.on('message', async message => {
 	
 	//Look up, confirm existence, & execute command
 	try {
-		const commandFile = require(`./src/commands/${command}.js`);
+		const commandFile = require(`./src/commands/${command}`);
 		console.log ('running command: ' + commandFile.name);
 		console.log ('command description: ' + commandFile.description);
-		await commandFile.execute ({message, args, timeInEpoch:halfAnYearInMilliseconds});
+		await commandFile.execute({message, args, timeInEpoch:halfAnYearInMilliseconds});
 	} catch (error) {
 		console.log (`Error: ${error}`);
-		message.channel.send('Cannot find command');
+		message.channel.send(`Error with command: ${error.message}`);
 	}
 });
 
