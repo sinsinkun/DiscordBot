@@ -35,7 +35,7 @@ class DiscordUser {
         array.sort((a,b) => b.value - a.value)
         return new Discord.MessageEmbed()
         .setColor('#0099ff')
-        .setTitle(`@${this._name} 's most used emojis!`)
+        .setTitle(`${this._name}'s most used emojis!`)
         .addFields(...array.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
     }
 
