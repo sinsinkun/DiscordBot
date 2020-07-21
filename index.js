@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
-const DiscordUser = require('./src/common/data/user');
+const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
-const prefix = '!';
+const prefix = process.env.PREFIX;
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
 
@@ -16,7 +16,6 @@ client.on('message', async message => {
 	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
 	if (message.author.bot) return;
-	//<--use this command for local tests--> if (!(message.channel.name == 'bot-testing')) return;
 	
 	// log emoji usage
 	const discordData = await getDiscordData(message);
