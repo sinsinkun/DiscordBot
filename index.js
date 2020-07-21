@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
-const DiscordUser = require('./src/common/data/user')
+const DiscordUser = require('./src/common/data/user');
+const DiscordServer = require('./src/common/data/server');
 const prefix = '!';
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
@@ -14,13 +15,12 @@ client.on('message', async message => {
 	//full chat log <--disabled chat log for clearer error logging-->
 	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
-	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
 	if (message.author.bot) return;
 	//<--use this command for local tests--> if (!(message.channel.name == 'bot-testing')) return;
 	
-	// log user emoji usage
-	await createIfUserDoesNotExist(user);
-	await user.logEmojiUsage(message);
+	// log emoji usage
+	const discordData = await getDiscordData(message);
+	await logEmojiUsage(message, discordData);
 
 	//parsing commands
 	if (!message.content.startsWith(prefix)) return;
@@ -32,15 +32,26 @@ client.on('message', async message => {
 	try {
 		const commandFile = require(`./src/commands/${command}`);
 		console.log ('running command: ' + commandFile.name);
-		await commandFile.execute({message, args, timeInEpoch:halfAnYearInMilliseconds});
+		await commandFile.execute({message, args, timeInEpoch:halfAnYearInMilliseconds, discordData});
 	} catch (error) {
 		console.log (error);
 		message.channel.send(`Command not found. Please check !help for commands`);
 	}
 });
 
-async function createIfUserDoesNotExist(user) {
+async function getDiscordData(message) {
+	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
+	const server = new DiscordServer(message.guild.id, message.guild.name);
 	if (!(await user.confirmExistence())) {
 		await user.create();
 	}
+	if (!(await server.confirmExistence())) {
+		await server.create();
+	}
+	return { user, server }
+}
+
+async function logEmojiUsage(message, discordData) {
+	await discordData.user.logEmojiUsage(message);
+	await discordData.server.logEmojiUsage(message);
 }

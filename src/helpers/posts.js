@@ -1,11 +1,11 @@
 async function getPostHistory(message, timeInEpoch) {
 	let messageBatch;
 	let messages = [];
-	const timeLimit = new Date().getTime() - timeInEpoch;
+	const timeLimit = timeInEpoch ? new Date().getTime() - timeInEpoch : null;
 	do {
 		if (messageBatch && messageBatch.size === 100){
 			let lastMessage = messageBatch.last();
-			if (lastMessage.createdTimestamp < timeLimit) {
+			if (timeLimit && lastMessage.createdTimestamp < timeLimit) {
 				break;
 			}
 			messageBatch = await message.channel.messages.fetch({limit:100, before:lastMessage.id})

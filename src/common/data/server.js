@@ -1,37 +1,33 @@
 const Discord = require('discord.js');
 const DiscordDocument = require('./discord_documents');
+const tableName = process.env.SERVER_TABLE_NAME;
 const region = process.env.AWS_DEFAULT_REGION;
-const tableName = process.env.TABLE_NAME;
 
-class DiscordUser {
-    constructor(userid, username, guild, guildId) {
-        this._id = userid;
-        this._name = username;
-        this._guild = guild;
-        this._guildId = guildId;
-        this._discordDoc = new DiscordDocument({ userid, tableName, region })
+class DiscordServer {
+    constructor(serverId, serverName) {
+        this._id = serverId;
+        this._name = serverName;
+        this._discordDoc = new DiscordDocument({ serverId, tableName, region })
     }
 
     async create(message) {
         await this._discordDoc.create({
             id: this._id,
-            username: this._name,
-            server: this._guild,
-            server_id: this._guildId,
+            servername: this._name,
             emojiUsage: {},
-        }, message)
+        }, message);
     }
 
     async confirmExistence() {
         return this._discordDoc.confirmExistence();
     }
 
-    async getEmojiUsage() {
+    async getEmojiUsage(descending) {
         const emojiUsage = await this._discordDoc.getEmojiUsage();
-        emojiUsage.sort((a,b) => b.value - a.value)
+        emojiUsage.sort((a,b) => descending ? b.value - a.value : a.value - b.value)
         return new Discord.MessageEmbed()
         .setColor('#0099ff')
-        .setTitle(`${this._name}'s most used emojis!`)
+        .setTitle(`${this._name}'s ${descending ? "most" : "least"} used emojis!`)
         .addFields(...emojiUsage.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
     }
 
@@ -40,4 +36,4 @@ class DiscordUser {
     }
 }
 
-module.exports = DiscordUser;
+module.exports = DiscordServer;
