@@ -1,7 +1,7 @@
 const db = require('../clients/dynamodb');
 const { getPostHistory } = require('../../helpers/posts')
 const emojis = require('../../helpers/emojis');
-const { occurrences } = require('./external');
+const { occurrences } = require('../../helpers/external');
 
 class DiscordDocument {
     constructor(id, tableName, region) {
