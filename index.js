@@ -16,7 +16,6 @@ client.on('message', async message => {
 
 	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
 	if (message.author.bot) return;
-	//<--use this command for local tests--> if (!(message.channel.name == 'bot-testing')) return;
 	
 	// log user emoji usage
 	await createIfUserDoesNotExist(user);
