@@ -7,6 +7,7 @@ async function count({ message, args, timeInEpoch }) {
     if (countNum === 0) message.channel.send('Nothing to count');
     else {
         for (let i=0; i<countNum; i++) {
+            message.channel.send(`Counting number of \'${args[i]}\'s used. Please wait`);
             var emoCount = await emojis.countEmoteUses(message, args[i], timeInEpoch);
             message.channel.send('Number of instances of ' + args[i] + ': ' + emoCount);
         }
