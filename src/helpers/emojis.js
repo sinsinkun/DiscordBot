@@ -36,4 +36,4 @@ async function countEmoteUses (msg, emote, timeInEpoch) {
 	return emoCounter;
 }
 
-module.exports = { getCustomEmojis, tabulateEmojis: countEmojiUse, countEmoteUses };
+module.exports = { getCustomEmojis, countEmoteUses };
