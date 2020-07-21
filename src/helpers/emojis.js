@@ -5,11 +5,6 @@ function getCustomEmojis(message) {
 	return customEmojis;
 }
 
-	// return new Discord.MessageEmbed()
-	// 				.setColor('#0099ff')
-	// 				.setTitle('Custom server emojis ordered by most used')
-	// 				.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
-
 //Count number of uses for an emote
 async function countEmoteUses (msg, emote, timeInEpoch) {
 	var emoCounter = 0;
