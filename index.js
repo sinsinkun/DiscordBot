@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
-const prefix = '!';
+const prefix = process.env.PREFIX;
 const client = new Discord.Client();
 const halfAnYearInMilliseconds = 15778476000;
 
