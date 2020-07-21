@@ -11,12 +11,13 @@ client.once('ready', () => {
 client.login(process.env.BOT_TOKEN);
 
 client.on('message', async message => {
-	//full chat log
-	console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
+	//full chat log <--disabled chat log for clearer error logging-->
+	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
 	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name);
 	if (message.author.bot) return;
-
+	//<--use this command for local tests--> if (!(message.channel.name == 'bot-testing')) return;
+	
 	// log user emoji usage
 	await createIfUserDoesNotExist(user);
 	await user.logEmojiUsage(message);
@@ -31,11 +32,10 @@ client.on('message', async message => {
 	try {
 		const commandFile = require(`./src/commands/${command}`);
 		console.log ('running command: ' + commandFile.name);
-		console.log ('command description: ' + commandFile.description);
 		await commandFile.execute({message, args, timeInEpoch:halfAnYearInMilliseconds});
 	} catch (error) {
-		console.log (`Error: ${error}`);
-		message.channel.send(`Error with command: ${error.message}`);
+		console.log (error);
+		message.channel.send(`Command not found. Please check !help for commands`);
 	}
 });
 
