@@ -15,7 +15,7 @@ class DiscordDocument {
         const history = await getPostHistory(message);
         const customEmojis = await emojis.getCustomEmojis(message);
         const emojiUsage = countEmojiUse(customEmojis, history);
-        await this._discordDoc.logHistoricEmojicUsage(emojiUsage)
+        await this.logHistoricEmojiUsage(emojiUsage)
     }
 
     async confirmExistence() {
@@ -31,7 +31,7 @@ class DiscordDocument {
         return array;
     }
 
-    async logHistoricEmojicUsage(historicEmojiUsage) {
+    async logHistoricEmojiUsage(historicEmojiUsage) {
         historicEmojiUsage.forEach(async emoji => {
             const updateExpression = "SET #emojiUsage.#emoji = #emojiUsage.#emoji + :increment"
             const createExpression = "SET #emojiUsage.#emoji = if_not_exists(#emojiUsage.#emoji, :increment)"
@@ -111,7 +111,7 @@ class DiscordDocument {
 function countEmojiUse(emojis, postHistory) {
 	postHistory.forEach(message => {
 		emojis.forEach(emoji => {
-			const count = occurrences(message.content, Object.name(emoji), false);
+			const count = occurrences(message.content, Object.keys(emoji)[0], false);
 			if (count >= 1){
 				emoji += count > 3 ? 3 : count;
 			}
