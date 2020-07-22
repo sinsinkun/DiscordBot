@@ -42,10 +42,10 @@ async function getDiscordData(message) {
 	const user = new DiscordUser(message.author.id, message.author.username, message.guild.name, message.guild.id);
 	const server = new DiscordServer(message.guild.id, message.guild.name);
 	if (!(await user.confirmExistence())) {
-		await user.create();
+		await user.create(message);
 	}
 	if (!(await server.confirmExistence())) {
-		await server.create();
+		await server.create(message);
 	}
 	return { user, server }
 }
