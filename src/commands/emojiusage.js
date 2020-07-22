@@ -1,4 +1,4 @@
-const name = 'emoji usage';
+const name = 'emojiusage';
 const description = 'Tallies top 50 emojis used over the last 6 months';
 const { getPostHistory } = require('../helpers/posts')
 const emojis = require('../helpers/emojis')

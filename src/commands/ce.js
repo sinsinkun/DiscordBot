@@ -1,4 +1,4 @@
-const name = 'Custom emotes';
+const name = 'ce';
 const description = 'Call, add, remove, and browse custom emotes';
 const Discord = require('discord.js');
 const customList = require('../common/data/customlist.json');
