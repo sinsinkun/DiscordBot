@@ -9,7 +9,7 @@ class DiscordUser {
         this._name = username;
         this._guild = guild;
         this._guildId = guildId;
-        this._discordDoc = new DiscordDocument({ userid, tableName, region })
+        this._discordDoc = new DiscordDocument(userid, tableName, region)
     }
 
     async create(message) {

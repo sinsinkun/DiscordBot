@@ -7,7 +7,7 @@ class DiscordServer {
     constructor(serverId, serverName) {
         this._id = serverId;
         this._name = serverName;
-        this._discordDoc = new DiscordDocument({ serverId, tableName, region })
+        this._discordDoc = new DiscordDocument(serverId, tableName, region)
     }
 
     async create(message) {
