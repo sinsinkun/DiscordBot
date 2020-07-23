@@ -14,7 +14,7 @@ function help({ message, args }){
         //List commands
         const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle('Avilable commands:')
+            .setTitle('Available commands:')
             .addFields (...commandList.map(command => {return {name: `${command.name}`, value: `${command.description}`}}));
         message.channel.send(embed);
     }
