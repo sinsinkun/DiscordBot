@@ -1,5 +1,6 @@
 const name = 'ce';
 const description = 'Call, add, remove, and browse custom emotes';
+const how2use = '\"!ce add <1> <2>\" will let <1> call <2>.\n\"!ce remove <1>\" will remove command <1>.\n\"!ce list\" will list existing commands.';
 const Discord = require('discord.js');
 const customList = require('../common/data/customlist.json');
 
@@ -65,4 +66,5 @@ function emoteExists(emoteKey) {
 
 module.exports.name = name;
 module.exports.description = description;
+module.exports.how2use = how2use;
 module.exports.execute = customEmotes;
