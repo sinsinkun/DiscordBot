@@ -24,7 +24,7 @@ function help({ message, args }){
         commandList.forEach(command => {
             if (args[0] == command.name) {
                 message.channel.send(command.description);
-                //message.channel.send(command.how2use);
+                if (command.how2use != undefined) message.channel.send(command.how2use);
                 commandNotFound = false;
             }
         })
