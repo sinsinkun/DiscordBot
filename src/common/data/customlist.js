@@ -28,7 +28,7 @@ class CustomEmotes {
         
     }
     
-    async call(input) {
+    call(input) {
         const params = {
             TableName: tableName,
             Key: {
@@ -36,7 +36,7 @@ class CustomEmotes {
             }
         }
         let output;
-        await db.get(params, (err, data) => {
+        db.get(params, (err, data) => {
             if (err) {
                 console.log(`Unable to find command \n${err}`);
                 output = null;
@@ -44,7 +44,7 @@ class CustomEmotes {
                 console.log(`Found command with output: ${data.Item.output}`);
                 output = data.Item.output;
             }
-        }).promise();
+        });
         return data.Item.output;
     }
 
