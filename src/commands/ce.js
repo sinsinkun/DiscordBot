@@ -2,19 +2,21 @@ const name = 'ce';
 const description = 'Call, add, remove, and browse custom emotes';
 const how2use = '\"!ce add <1> <2>\" will let <1> call <2>.\n\"!ce remove <1>\" will remove command <1>.\n\"!ce list\" will list existing commands.';
 const Discord = require('discord.js');
-const db = require('../common/data/customlist.js');
+const db = require('../common/clients/dynamodb.js');
+const region = process.env.AWS_DEFAULT_REGION;
+const tableName = 'custom_emotes';
 
-function customEmotes({ message, args }){
+async function customEmotes({ message, args }){
 
     //Remap args to be lower case only
     const regexC = args.map( eachArg => eachArg.toLowerCase());
-    const customList = new db;
-    const output = customList.call(regexC[0]);
-
+    const customList = new db({ tableName: tableName, region: region});
+    
     //Run custom emote
     if (regexC[0] != 'add' && regexC[0] != 'remove' && regexC[0] != 'list') {
-        console.log(output);
-        //if (output != null) message.channel.send(output);
+        const output = await customList.callEmote(regexC[0]);
+        if (output != null) message.channel.send(output);
+        else message.channel.send('Custom emote doesn\'t exist.');
     }
     else if (regexC[0] === 'add' && regexC.length === 3) {
         //Make sure standard ce commands aren't added
@@ -27,15 +29,16 @@ function customEmotes({ message, args }){
         }
         //Add custom emote to database
         else {
-            console.log (`Add calling \'${regexC[1]}\' to perform \'${regexC[2]}\'`);
-            customDB.add(regexC[1], regexC[2]);
+            const addSuccess = customList.addEmote(regexC[1], regexC[2]);
+            if (addSuccess) message.channel.send(`Added calling \'${regexC[1]}\' to perform \'${regexC[2]}\'`);
+            else message.channel.send('Failed to add command.');
         }
     }
     else if (regexC[0] === 'remove' && regexC.length === 2) {
         //Check if custom emote exists
         if (output != null) {
             console.log (`Remove calling \'${regexC[1]}\' to perform \'${regexC[2]}\'`);
-            customDB.remove(regexC[1]);
+            customList.removeEmote(regexC[1]);
         }
         else {
             message.channel.send('Emote doesn\'t exist.');
