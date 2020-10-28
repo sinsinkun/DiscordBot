@@ -66,7 +66,6 @@ class DatabaseClient {
 
         try {
             const data = await this._documentClient.get(params).promise();
-            console.log(`Found command with output: ${data.Item.output}`);
             return data.Item.output;
         } catch(e) {
             console.log(e);
@@ -83,6 +82,7 @@ class DatabaseClient {
                 "output": output
             }
         }
+
         try {
             this._documentClient.put(params).promise();
             return true;
@@ -102,11 +102,12 @@ class DatabaseClient {
         }
 
         try {
-            await this._documentClient.get(params).promise();
-            // remove command
+            await this._documentClient.delete(params).promise();
+            return true;
         } catch(e) {
+            console.log('failed to delete');
             console.log(e);
-            throw e;
+            return false;
         }
     }
 

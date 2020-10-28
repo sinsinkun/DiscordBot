@@ -5,52 +5,83 @@ const Discord = require('discord.js');
 const db = require('../common/clients/dynamodb.js');
 const region = process.env.AWS_DEFAULT_REGION;
 const tableName = 'custom_emotes';
+const specialCalls = ['add', 'remove', 'list'];
 
 async function customEmotes({ message, args }){
+    
+    const customEmoteList = new db({ tableName: tableName, region: region});
 
-    //Remap args to be lower case only
-    const regexC = args.map( eachArg => eachArg.toLowerCase());
-    const customList = new db({ tableName: tableName, region: region});
+    //Parse args to be easily usable for functions
+    let parsedInput = {call:'', inVal:'', outVal:''};
+    if (args.length === 0) {
+        message.channel.send('No input?');
+        return;
+    }
+    if (args.length > 0) parsedInput.call = args[0].toLowerCase();
+    if (args.length > 1) parsedInput.inVal = args[1].toLowerCase();
+    if (args.length > 2) {
+        //add all subsequent words together to form output
+        for (let i=2; i<args.length; i++) {
+            parsedInput.outVal += args[i] + ' ';
+        }
+        parsedInput.outVal = parsedInput.outVal.slice(0,-1);
+    }
     
     //Run custom emote
-    if (regexC[0] != 'add' && regexC[0] != 'remove' && regexC[0] != 'list') {
-        const output = await customList.callEmote(regexC[0]);
+    if (!specialCalls.includes(parsedInput.call)) {
+        const output = await customEmoteList.callEmote(parsedInput.call);
         if (output != null) message.channel.send(output);
         else message.channel.send('Custom emote doesn\'t exist.');
     }
-    else if (regexC[0] === 'add' && regexC.length === 3) {
+    else if (parsedInput.call === 'add') {
         //Make sure standard ce commands aren't added
-        if (regexC[1] === ('add' || 'remove' || 'list')) {
+        if (specialCalls.includes(parsedInput.inVal)) {
             message.channel.send('Now listen here you lil shit');
+            return;
         }
-        //Check if custom emote already exists
-        else if (output != null) {
-            message.channel.send('Emote shortcut already in use');
+        //Check if input exists
+        if (parsedInput.inVal.length < 1) {
+            message.channel.send('No input, no command');
+            return;
         }
-        //Add custom emote to database
+        //Check if output exists
+        if (parsedInput.outVal.length < 1) {
+            message.channel.send('No output, no command');
+            return;
+        }
+        // Check if custom emote already exists
+        const output = await customEmoteList.callEmote(parsedInput.inVal);
+        if (output != null) message.channel.send('Emote shortcut already in use');
         else {
-            const addSuccess = customList.addEmote(regexC[1], regexC[2]);
-            if (addSuccess) message.channel.send(`Added calling \'${regexC[1]}\' to perform \'${regexC[2]}\'`);
+            //Add custom emote to the DB
+            const addSuccess = await customEmoteList.addEmote(parsedInput.inVal, parsedInput.outVal);
+            if (addSuccess) message.channel.send(`Added command.`);
             else message.channel.send('Failed to add command.');
         }
     }
-    else if (regexC[0] === 'remove' && regexC.length === 2) {
-        //Check if custom emote exists
-        if (output != null) {
-            console.log (`Remove calling \'${regexC[1]}\' to perform \'${regexC[2]}\'`);
-            customList.removeEmote(regexC[1]);
+    else if (parsedInput.call === 'remove') {
+        //Check if input exists
+        if (parsedInput.inVal.length < 1) {
+            message.channel.send('What are you trying to delete?');
+            return;
         }
+        //Check if custom emote exists in the DB
+        const output = await customEmoteList.callEmote(parsedInput.inVal);
+        if (output === null) message.channel.send('Custom Emote doesn\'t exist in the database.');
         else {
-            message.channel.send('Emote doesn\'t exist.');
+            //Remove custom emote from DB
+            const removeSuccess = await customEmoteList.removeEmote(parsedInput.inVal);
+            if (removeSuccess) message.channel.send(`Removed command \'${parsedInput.inVal}\'`);
+            else message.channel.send('Failed to remove command.');
         }
     }
-    else if (regexC[0] === 'list' && regexC.length == 1) {
+    else if (parsedInput.call === 'list') {
         //List all existing commands
         console.log ('Listing all commands');
         /* const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Custom emotes')
-            .addFields (...customList.map(listVal => {return {name: `${listVal.key}`, value: `${listVal.call}`}}));
+            .addFields (...customEmoteList.map(listVal => {return {name: `${listVal.key}`, value: `${listVal.call}`}}));
         message.channel.send(embed); */
     }
     else {
@@ -58,14 +89,6 @@ async function customEmotes({ message, args }){
         console.log ('Command was not called correctly');
         message.channel.send('Command was not called correctly, please try again');
     }
-
-}
-
-function emoteExists(emoteKey) {
-    for (i=0; i<customList.length; i++) {
-        if (customList[i].key == emoteKey) return true;
-    }
-    return false;
 }
 
 module.exports.name = name;
