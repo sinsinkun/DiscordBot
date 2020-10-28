@@ -54,6 +54,78 @@ class DatabaseClient {
     async update(params) {
         await this._documentClient.update(params).promise();
     }
+
+    //custom emote command: call command from DB
+    async callEmote(input) {
+        const params = {
+            TableName: this._tableName,
+            Key: {
+                "input": input
+            }
+        }
+
+        try {
+            const data = await this._documentClient.get(params).promise();
+            return data.Item.output;
+        } catch(e) {
+            console.log(`Could not find command \'${input}\'`);
+            console.log(e);
+            return null;
+        }
+    }
+
+    //custom emote command: add command to DB
+    async addEmote(input, output) {
+        const params = {
+            TableName: this._tableName,
+            Item: {
+                "input": input,
+                "output": output
+            }
+        }
+
+        try {
+            this._documentClient.put(params).promise();
+            return true;
+        } catch {
+            console.log(e);
+            return false;
+        }
+    }
+
+    //custom emote command: remove command from DB
+    async removeEmote(input) {
+        const params = {
+            TableName: this._tableName,
+            Key: {
+                "input": input
+            }
+        }
+
+        try {
+            await this._documentClient.delete(params).promise();
+            return true;
+        } catch(e) {
+            console.log(e);
+            return false;
+        }
+    }
+
+    //custom emote command: get list of commands from DB
+    async getEmoteList() {
+        const params = {
+            TableName: this._tableName,
+        }
+
+        try {
+            const dataList = await this._documentClient.scan(params).promise();
+            const emoteList = dataList.Items;
+            return emoteList;
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
+    }
     
 }
 
