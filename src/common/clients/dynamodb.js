@@ -68,6 +68,7 @@ class DatabaseClient {
             const data = await this._documentClient.get(params).promise();
             return data.Item.output;
         } catch(e) {
+            console.log(`Could not find command \'${input}\'`);
             console.log(e);
             return null;
         }
@@ -105,15 +106,25 @@ class DatabaseClient {
             await this._documentClient.delete(params).promise();
             return true;
         } catch(e) {
-            console.log('failed to delete');
             console.log(e);
             return false;
         }
     }
 
     //custom emote command: get list of commands from DB
-    getEmoteList() {
-        
+    async getEmoteList() {
+        const params = {
+            TableName: this._tableName,
+        }
+
+        try {
+            const dataList = await this._documentClient.scan(params).promise();
+            const emoteList = dataList.Items;
+            return emoteList;
+        } catch(e) {
+            console.log(e);
+            return null;
+        }
     }
     
 }

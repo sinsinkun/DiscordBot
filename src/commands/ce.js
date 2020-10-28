@@ -78,11 +78,13 @@ async function customEmotes({ message, args }){
     else if (parsedInput.call === 'list') {
         //List all existing commands
         console.log ('Listing all commands');
-        /* const embed = new Discord.MessageEmbed()
+        const output = await customEmoteList.getEmoteList();
+        console.log(output);
+        const embed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle('Custom emotes')
-            .addFields (...customEmoteList.map(listVal => {return {name: `${listVal.key}`, value: `${listVal.call}`}}));
-        message.channel.send(embed); */
+            .addFields (...output.map(listVal => {return {name: `${listVal.input}`, value: `${listVal.output}`}}));
+        message.channel.send(embed);
     }
     else {
         //Command not called correctly
