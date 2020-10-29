@@ -86,7 +86,12 @@ async function customEmotes({ message, args }){
                 .setColor('#0099ff')
                 .setTitle('Custom emotes')
                 .setDescription(
-                    emoteArray.map(emote => {return (`**${emote.input}** ][ \`\`${emote.output}\`\``)})
+                    emoteArray.map(emote => {
+                        //Trim down long URLs
+                        let outString = emote.output;
+                        if (outString.length > 30) outString = outString.slice(0,25) + '...';
+                        return (`**${emote.input}** ][ ${outString}`)
+                    })
                 )
                 .setFooter(`${pageNum}/${numPages}`)
             message.channel.send(embed);
