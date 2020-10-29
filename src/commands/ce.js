@@ -6,6 +6,7 @@ const db = require('../common/clients/dynamodb.js');
 const region = process.env.AWS_DEFAULT_REGION;
 const tableName = 'custom_emotes';
 const specialCalls = ['add', 'remove', 'list'];
+const emotesPerPage = 12;
 
 async function customEmotes({ message, args }){
     
@@ -77,14 +78,22 @@ async function customEmotes({ message, args }){
     }
     else if (parsedInput.call === 'list') {
         //List all existing commands
-        console.log ('Listing all commands');
-        const output = await customEmoteList.getEmoteList();
-        console.log(output);
-        const embed = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Custom emotes')
-            .addFields (...output.map(listVal => {return {name: `${listVal.input}`, value: `${listVal.output}`}}));
-        message.channel.send(embed);
+        let emoteArray = await customEmoteList.getEmoteList();
+        const numPages = Math.ceil(emoteArray.length/emotesPerPage);
+        let pageNum = 1;
+        while (emoteArray.length > 0) {
+            const embed = new Discord.MessageEmbed()
+                .setColor('#0099ff')
+                .setTitle('Custom emotes')
+                .setDescription(
+                    emoteArray.map(emote => {return (`**${emote.input}** ][ \`\`${emote.output}\`\``)})
+                )
+                .setFooter(`${pageNum}/${numPages}`)
+            message.channel.send(embed);
+            pageNum++;
+            emoteArray = emoteArray.slice(emotesPerPage);
+        }
+        
     }
     else {
         //Command not called correctly
