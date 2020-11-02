@@ -82,11 +82,12 @@ async function customEmotes({ message, args }){
         const numPages = Math.ceil(emoteArray.length/emotesPerPage);
         let pageNum = 1;
         while (emoteArray.length > 0) {
+            const printArray = emoteArray.slice(0, emotesPerPage);
             const embed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Custom emotes')
                 .setDescription(
-                    emoteArray.map(emote => {
+                    printArray.map(emote => {
                         //Trim down long URLs
                         let outString = emote.output;
                         if (outString.length > 30) outString = outString.slice(0,25) + '...';
@@ -98,7 +99,7 @@ async function customEmotes({ message, args }){
             pageNum++;
             emoteArray = emoteArray.slice(emotesPerPage);
         }
-        
+        // lastMsg.addEmote('➡️');
     }
     else {
         //Command not called correctly
