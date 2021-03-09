@@ -29,13 +29,13 @@ class DiscordDocument {
     async logEmojiUsage(message) {
         const serverEmojis = emojis.getCustomEmojis(message);
         serverEmojis.forEach(async emoji => {
-            const count = occurrences(message.content, emoji.name, false);
+            const count = occurrences(message.content, emoji, false);
             if (count >= 1){
                 const updateExpression = "SET #emojiUsage.#emoji = #emojiUsage.#emoji + :increment"
                 const createExpression = "SET #emojiUsage.#emoji = if_not_exists(#emojiUsage.#emoji, :increment)"
                 const expressionNames = {
                     '#emojiUsage': "emojiUsage",
-                    '#emoji': emoji.name,
+                    '#emoji': emoji,
                 }
                 const expressionValues = {
                     ':increment': count > 3 ? 3 : count,

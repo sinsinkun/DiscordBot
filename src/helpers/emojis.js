@@ -1,6 +1,6 @@
 function getCustomEmojis(message) {
 	let customEmojis = message.guild.emojis.cache.map(emoji => {
-		return { [`:${emoji.name}:${emoji.id}`]: 0 };
+		return `:${emoji.name}:${emoji.id}`;
 	})
 	return customEmojis;
 }
