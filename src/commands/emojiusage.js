@@ -1,8 +1,5 @@
 const name = 'emoji usage';
 const description = 'Tallies top 25 emojis of all time for server or @user.';
-const { getPostHistory } = require('../helpers/posts')
-const emojis = require('../helpers/emojis')
-const DiscordUser = require('../common/data/user')
 
 async function emojiUsage({ message, args, discordData }) {
     if (message.guild.available && message.channel.type === "text" && args.length === 0) {
