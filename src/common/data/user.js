@@ -26,12 +26,12 @@ class DiscordUser {
         return this._discordDoc.confirmExistence();
     }
 
-    async getEmojiUsage(descending) {
+    async getEmojiUsage(ascending) {
         const emojiUsage = await this._discordDoc.getEmojiUsage();
-        emojiUsage.sort((a,b) => descending ? b.value - a.value : a.value - b.value)
+        emojiUsage.sort((a,b) => ascending ? b.value - a.value : a.value - b.value)
         return new Discord.MessageEmbed()
         .setColor('#0099ff')
-        .setTitle(`${this._name}'s most used emojis!`)
+        .setTitle(`${this._name}'s ${ascending ? "least" : "most"} used emojis!`)
         .addFields(...emojiUsage.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
     }
 
