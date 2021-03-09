@@ -26,9 +26,9 @@ class DiscordUser {
         return this._discordDoc.confirmExistence();
     }
 
-    async getEmojiUsage() {
+    async getEmojiUsage(descending) {
         const emojiUsage = await this._discordDoc.getEmojiUsage();
-        emojiUsage.sort((a,b) => b.value - a.value)
+        emojiUsage.sort((a,b) => descending ? b.value - a.value : a.value - b.value)
         return new Discord.MessageEmbed()
         .setColor('#0099ff')
         .setTitle(`${this._name}'s most used emojis!`)
