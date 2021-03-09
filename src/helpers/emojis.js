@@ -1,27 +1,8 @@
-const Discord = require('discord.js');
-const { occurrences } = require('./external');
-
 function getCustomEmojis(message) {
 	let customEmojis = message.guild.emojis.cache.map(emoji => {
-		return { name: `:${emoji.name}:${emoji.id}`, value: "0"};
+		return `:${emoji.name}:${emoji.id}`;
 	})
 	return customEmojis;
-}
-
-function tabulateEmojis(emojis, postHistory) {
-	postHistory.forEach(message => {
-		emojis.forEach(emoji => {
-			const count = occurrences(message[1].content, emoji.name, false);
-			if (count >= 1){
-				emoji.value = (parseInt(emoji.value) + (count > 3 ? 3 : count)).toString();
-			}
-		})
-	})
-	emojis = emojis.sort((a,b) => b.value - a.value)
-	return new Discord.MessageEmbed()
-					.setColor('#0099ff')
-					.setTitle('Custom server emojis ordered by most used')
-					.addFields(...emojis.map(emoji => { return { name: `<${emoji.name}>`, value: emoji.value, inline:true }}));
 }
 
 //Count number of uses for an emote
@@ -50,4 +31,4 @@ async function countEmoteUses (msg, emote, timeInEpoch) {
 	return emoCounter;
 }
 
-module.exports = { getCustomEmojis, tabulateEmojis, countEmoteUses };
+module.exports = { getCustomEmojis, countEmoteUses };

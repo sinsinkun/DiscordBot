@@ -51,8 +51,8 @@ class DatabaseClient {
 		}
     }
     
-    async update(params) {
-        await this._documentClient.update(params).promise();
+    update(params) {
+        return this._documentClient.update(params).promise();
     }
 
     //custom emote command: call command from DB
