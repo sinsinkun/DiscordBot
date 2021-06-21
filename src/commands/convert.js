@@ -1,5 +1,5 @@
 const name = 'convert';
-const description = 'Converts between celsius:farenheit, miles:kilometers, feet:centimeters';
+const description = 'Converts between celsius:farenheit, miles:kilometers, feet:centimeters, kilograms:pounds';
 
 async function convert({ message, args }) {
 
