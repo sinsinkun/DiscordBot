@@ -36,6 +36,14 @@ async function convert({ message, args }) {
 			case "IN":
 				const distCM2 = value*2.54;
 				return `${distCM2}cm`;
+			case "KG":
+				const weightLbs = value*2.2046;
+				return `${weightLbs.toFixed(2)}lbs`;
+			case "LB":
+			case "LBS":
+			case "POUNDS":
+				const weightKg = value/2.2046;
+				return `${weightKg.toFixed(2)}kg`;
 			default:
 				console.log("Could not find matching unit", unit);
 				break;
