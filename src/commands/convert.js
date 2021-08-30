@@ -44,6 +44,12 @@ async function convert({ message, args }) {
 			case "POUNDS":
 				const weightKg = value/2.2046;
 				return `${weightKg.toFixed(2)}kg`;
+			case "ML":
+				const fluidOz = value*0.033814;
+				return `${fluidOz.toFixed(2)}oz`;
+			case "OZ":
+				const fluidMl = value/0.033814;
+				return `${fluidMl.toFixed(2)}ml`;
 			default:
 				console.log("Could not find matching unit", unit);
 				break;
