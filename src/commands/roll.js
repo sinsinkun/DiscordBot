@@ -26,6 +26,11 @@ function roll({ message, args }){
             }
             dieSides = parseInt(temp);
             console.log(`${numDie} x ${dieSides}`);
+            //exception for too large numbers
+            if (numDie > 10000 || dieSides > 10000) {
+                message.channel.send(':ah:');
+                return;
+            }
             //calculate total
             let dieArray = [];
             let dieSum = 0;
