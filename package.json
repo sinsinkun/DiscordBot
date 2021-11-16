@@ -18,7 +18,7 @@
   "author": "sinsin",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.715.0",
+    "aws-sdk": "^2.814.0",
     "discord.js": "^12.2.0",
     "glob": "^7.1.6",
     "request": "2.81.0"
