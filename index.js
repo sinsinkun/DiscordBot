@@ -11,7 +11,7 @@ client.once('ready', () => {
 
 client.login(process.env.BOT_TOKEN);
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
 	//full chat log <--disabled chat log for clearer error logging-->
 	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
