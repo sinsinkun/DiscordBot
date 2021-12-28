@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
 const prefix = process.env.PREFIX;
-const client = new Discord.Client();
+const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_EMOJIS_AND_STICKERS"]});
 const halfAnYearInMilliseconds = 15778476000;
 
 client.once('ready', () => {
