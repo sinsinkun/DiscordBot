@@ -16,7 +16,7 @@ function help({ message, args }){
             .setColor('#0099ff')
             .setTitle('Available commands:')
             .addFields (...commandList.map(command => {return {name: `${command.name}`, value: `${command.description}`}}));
-        message.channel.send(embed);
+        message.channel.send({ embeds : [embed] });
     }
     else {
         //Call help for specific command

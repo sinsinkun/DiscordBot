@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
 const prefix = process.env.PREFIX;
-const client = new Discord.Client();
+const client = new Discord.Client({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_EMOJIS_AND_STICKERS"]});
 const halfAnYearInMilliseconds = 15778476000;
 
 client.once('ready', () => {
@@ -11,7 +11,7 @@ client.once('ready', () => {
 
 client.login(process.env.BOT_TOKEN);
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
 	//full chat log <--disabled chat log for clearer error logging-->
 	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
@@ -19,7 +19,7 @@ client.on('message', async message => {
 	
 	// log emoji usage
 	const discordData = await getDiscordData(message);
-	await logEmojiUsage(message, discordData);
+	await logUsage(message, discordData);
 
 	//parsing commands
 	if (!message.content.startsWith(prefix)) return;
@@ -50,7 +50,9 @@ async function getDiscordData(message) {
 	return { user, server }
 }
 
-async function logEmojiUsage(message, discordData) {
+async function logUsage(message, discordData) {
 	await discordData.user.logEmojiUsage(message);
+	await discordData.user.logStickerUsage(message);
 	await discordData.server.logEmojiUsage(message);
+	await discordData.server.logStickerUsage(message);
 }
