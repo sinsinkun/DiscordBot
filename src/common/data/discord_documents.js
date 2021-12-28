@@ -1,4 +1,5 @@
 const db = require('../clients/dynamodb');
+const Discord = require('discord.js');
 const emojis = require('../../helpers/emojis');
 const stickers = require('../../helpers/stickers');
 const { occurrences } = require('../../helpers/external');
@@ -34,6 +35,24 @@ class DiscordDocument {
             throw new Error("This user hasn't used any custom stickers!");
         }
         return array;
+    }
+
+    async writeEmojiUsage(name, ascending) {
+        const emojiUsage = await this.getEmojiUsage();
+        emojiUsage.sort((a,b) => ascending ? a.value - b.value : b.value - a.value)
+        return new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle(`${name}'s ${ascending ? "least" : "most"} used emojis!`)
+        .addFields(...emojiUsage.map(emoji => { return { name: `<${emoji.name}>`, value: `${emoji.value}`, inline:true }}));
+    }
+
+    async writeStickerUsage(name, ascending) {
+        const stickerUsage = await this.getStickerUsage();
+        stickerUsage.sort((a,b) => ascending ? a.value - b.value : b.value - a.value)
+        return new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .setTitle(`${name}'s ${ascending ? "least" : "most"} used stickers!`)
+        .addFields(...stickerUsage.map(sticker => { return { name: `<${sticker.name}>`, value: `${sticker.value}`, inline:true }}));
     }
 
     async logEmojiUsage(message) {

@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const DiscordDocument = require('./discord_documents');
 const region = process.env.AWS_DEFAULT_REGION;
 const tableName = process.env.TABLE_NAME;
@@ -25,6 +24,14 @@ class DiscordUser {
 
     async confirmExistence() {
         return this._discordDoc.confirmExistence();
+    }
+
+    async writeEmojiUsage(ascending) {
+        return this._discordDoc.writeEmojiUsage(this._name, ascending);
+    }
+
+    async writeStickerUsage(ascending) {
+        return this._discordDoc.writeStickerUsage(this._name, ascending);
     }
 
     async logEmojiUsage(message) {
