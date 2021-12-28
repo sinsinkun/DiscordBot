@@ -19,7 +19,7 @@ client.on('message', async message => {
 	
 	// log emoji usage
 	const discordData = await getDiscordData(message);
-	await logEmojiUsage(message, discordData);
+	await logUsage(message, discordData);
 
 	//parsing commands
 	if (!message.content.startsWith(prefix)) return;
@@ -50,7 +50,9 @@ async function getDiscordData(message) {
 	return { user, server }
 }
 
-async function logEmojiUsage(message, discordData) {
+async function logUsage(message, discordData) {
 	await discordData.user.logEmojiUsage(message);
+	await discordData.user.logStickerUsage(message);
 	await discordData.server.logEmojiUsage(message);
+	await discordData.server.logStickerUsage(message);
 }

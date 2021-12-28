@@ -1,5 +1,6 @@
 const db = require('../clients/dynamodb');
 const emojis = require('../../helpers/emojis');
+const stickers = require('../../helpers/stickers');
 const { occurrences } = require('../../helpers/external');
 
 class DiscordDocument {
@@ -22,6 +23,15 @@ class DiscordDocument {
         const array = Object.entries(document.emojiUsage).map(( [k, v] ) => ({ name: k, value: v }));
         if (!array.length) {
             throw new Error("This user hasn't used any custom emojis!");
+        }
+        return array;
+    }
+
+    async getStickerUsage() {
+        const document = await this._db.getById(this._id);
+        const array = Object.entries(document.stickerUsage).map(( [k, v] ) => ({ name: k, value: v }));
+        if (!array.length) {
+            throw new Error("This user hasn't used any custom stickers!");
         }
         return array;
     }
@@ -64,6 +74,47 @@ class DiscordDocument {
                 }
             }
         })
+    }
+
+    async logStickerUsage(message) {
+        if (!message.stickers.size) return;
+
+        const serverStickers = stickers.getCustomStickers(message);
+        const sticker = message.stickers.get(message.stickers.keys().next().value); // WHY THE HELL IS THIS A MAP IF YOU CAN ONLY SEND ONE STICKER PER MESSAGE??? DISCORD PLEASE??????
+
+        if (serverStickers.includes(`:${sticker.name}:${sticker.id}`)) {
+            const updateExpression = "SET #stickerUsage.#sticker = #stickerUsage.#sticker + :increment"
+            const createExpression = "SET #stickerUsage.#sticker = if_not_exists(#stickerUsage.#sticker, :increment)"
+            const expressionNames = {
+                '#stickerUsage': "stickerUsage",
+                '#sticker': sticker.name,
+            }
+            const expressionValues = {
+                ':increment': 1,
+            }
+            const params = {
+                TableName: this._tableName,
+                Key: {
+                    'id': this._id,
+                },
+                ExpressionAttributeNames: expressionNames,
+                ExpressionAttributeValues: expressionValues,
+            }
+            try {
+                await this._db.update({...params, UpdateExpression: updateExpression });   
+            } catch (error) {
+                if (error.name === "ValidationException") {
+                    // Update to existing emoji failed, probably doesn't exist.
+                    try {
+                        // Create new emoji in list with increment value.
+                        await this._db.update({...params, UpdateExpression: createExpression })         
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+                else throw error;
+            }
+        }
     }
 }
 
