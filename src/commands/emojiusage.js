@@ -14,14 +14,14 @@ async function emojiUsage({ message, args, discordData }) {
     try {
         const arg = getArgument(args);
         if (message.mentions.users.size === 0) {
-            const emojisUsed = await discordData.server.getEmojiUsage(arg);
-            message.channel.send(emojisUsed);
+            const emojisUsed = await discordData.server.writeEmojiUsage(arg);
+            message.channel.send({ embeds : [emojisUsed] });
         }
-        else if (message.mentions.users.size === 1) {
+        else if (message.mentions.users.size === 1) { // @user in message
             const {id, username} = message.mentions.users.first();
-            const user = new DiscordUser(id, username, message.guild.name, message.guild.id);
-            const emojisUsed = await user.getEmojiUsage(arg);
-            message.channel.send(emojisUsed);
+            const user = new DiscordUser(id, username, message.guild.name, message.guild.id); // create new instance of user
+            const emojisUsed = await user.writeEmojiUsage(arg);
+            message.channel.send({ embeds : [emojisUsed] });
         } 
     } catch (error) {
         message.channel.send(error.message);
