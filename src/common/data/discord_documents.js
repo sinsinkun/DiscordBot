@@ -21,18 +21,26 @@ class DiscordDocument {
 
     async getEmojiUsage() {
         const document = await this._db.getById(this._id);
+        if (!document) {
+            throw new Error("I don't even have records of that fool.");
+        }
+
         const array = Object.entries(document.emojiUsage).map(( [k, v] ) => ({ name: k, value: v }));
         if (!array.length) {
-            throw new Error("This user hasn't used any custom emojis!");
+            throw new Error("This user hasn't used any custom emojis! Boring.");
         }
         return array;
     }
 
     async getStickerUsage() {
         const document = await this._db.getById(this._id);
+        if (!document) {
+            throw new Error("I don't even have records of that fool.");
+        }
+
         const array = Object.entries(document.stickerUsage).map(( [k, v] ) => ({ name: k, value: v }));
         if (!array.length) {
-            throw new Error("This user hasn't used any custom stickers!");
+            throw new Error("This user hasn't used any custom stickers! Boring.");
         }
         return array;
     }
