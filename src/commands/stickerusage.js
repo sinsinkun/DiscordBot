@@ -1,5 +1,5 @@
 const name = 'sticker usage';
-const description = 'Tallies top 10 stickers of all time for server or @user.';
+const description = 'Tallies top 25 stickers of all time for server or @user.';
 const DiscordUser = require('../common/data/user')
 const acceptedArgs = Object.freeze({
     DESCENDING: false,
