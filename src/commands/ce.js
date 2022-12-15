@@ -95,7 +95,7 @@ async function customEmotes({ message, args }){
                     })
                 )
                 .setFooter(`${pageNum}/${numPages}`)
-            message.channel.send({embeds: [embed]});
+            message.channel.send(embed);
             pageNum++;
             emoteArray = emoteArray.slice(emotesPerPage);
         }
