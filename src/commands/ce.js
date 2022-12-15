@@ -83,19 +83,19 @@ async function customEmotes({ message, args }){
         let pageNum = 1;
         while (emoteArray.length > 0) {
             const printArray = emoteArray.slice(0, emotesPerPage);
+            const desc = printArray.reduce((out, emote) => {
+                //Trim down long URLs
+                let outString = emote.output;
+                // TODO: handle special characters
+                // if (outString.length > 30) outString = `${outString.slice(0,25)}...`;
+                return out + (`**${emote.input}** ][ ${outString}\n`)
+            }, "");
             const embed = new Discord.MessageEmbed()
                 .setColor('#0099ff')
                 .setTitle('Custom emotes')
-                .setDescription(
-                    printArray.map(emote => {
-                        //Trim down long URLs
-                        let outString = emote.output;
-                        if (outString.length > 30) outString = outString.slice(0,25) + '...';
-                        return (`**${emote.input}** ][ ${outString}`)
-                    })
-                )
-                .setFooter(`${pageNum}/${numPages}`)
-            message.channel.send(embed);
+                .setDescription(desc)
+                .setFooter({ text:`${pageNum}/${numPages}` });
+            message.channel.send({ embeds: [embed] });
             pageNum++;
             emoteArray = emoteArray.slice(emotesPerPage);
         }
