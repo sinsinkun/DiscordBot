@@ -1,12 +1,11 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Collection, Events, GatewayIntentBits } = require('discord.js');
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
-const prefix = process.env.PREFIX;
-const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildEmojisAndStickers]});
-const halfAnYearInMilliseconds = 15778476000;
+const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
+	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent]});
 
 client.commands = new Collection();
 
@@ -58,9 +57,6 @@ client.on(Events.InteractionCreate, async interaction => {
 });
 
 client.on(Events.MessageCreate, async message => {
-	//full chat log <--disabled chat log for clearer error logging-->
-	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
-
 	if (message.author.bot) return;
 	
 	// log emoji usage
