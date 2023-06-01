@@ -4,7 +4,7 @@ echo "Adding env variables..."
 source add_env.sh
 
 echo "Launching bot-chan..."
-node index.js
+npm run deploy-commands
 wait
 
 echo "Godspeed o7"
