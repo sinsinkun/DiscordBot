@@ -1,8 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { EmbedBuilder } = require('discord.js');
-const db = require('../../common/clients/dynamodb.js');
-const region = process.env.AWS_DEFAULT_REGION;
-const tableName = 'custom_emotes';
+
 const subCommands = {
     EMOTE:'emote',
     ADD:'add',
@@ -15,7 +13,7 @@ const stringOptions = {
 }
 
 // Create DB connection once, then reuse same connection.
-const customEmoteList = new db({ tableName: tableName, region: region})
+const EmoteCache = require('../../helpers/emoteCache')
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -29,6 +27,7 @@ module.exports = {
                     option
                         .setName(stringOptions.NAME)
                         .setDescription('Emote name to invoke')
+                        .setAutocomplete(true)
                         .setRequired(true)
                 )
         )
@@ -57,6 +56,7 @@ module.exports = {
                     option
                         .setName(stringOptions.NAME)
                         .setDescription('Emote name to be removed')
+                        .setAutocomplete(true)
                         .setRequired(true)
                 )
         )
@@ -65,8 +65,21 @@ module.exports = {
                 .setName(subCommands.LIST)
                 .setDescription('List available custom emojis')
         ),
+    async autocomplete(interaction) {
+        const focusedOption = interaction.options.getFocused(true);
+        let choices;
+
+        if (focusedOption.name === stringOptions.NAME) {
+            choices = await EmoteCache.list();
+        }
+
+        const filtered = choices.filter(choice => choice.input.startsWith(focusedOption.value));
+        await interaction.respond(
+            filtered.map(choice => ({ name: choice.input, value: choice.input })).slice(0, 25),
+        );
+    },
 	async execute(interaction) {
-        interaction.deferReply()
+        await interaction.deferReply()
         switch(interaction.options.getSubcommand()) {
             case subCommands.EMOTE:
                 await callCustomEmote(interaction)
@@ -88,12 +101,13 @@ module.exports = {
 
 async function callCustomEmote(interaction) {
     const input = interaction.options.getString(stringOptions.NAME)
-    const emote = await customEmoteList.callEmote(input)
-    interaction.followUp({ content: emote || `Custom emote doesn\'t exist: ${input}` });
+    const emote = await EmoteCache.find(input)
+    await interaction.followUp({ content: emote.output || `Custom emote doesn\'t exist: ${input}` });
 }
 
 async function listEmotes(interaction) {
-    let emoteArray = await customEmoteList.getEmoteList()
+    let emoteArray = await EmoteCache.listClone()
+
     const emotesPerPage = 20
     const numPages = Math.ceil(emoteArray.length/emotesPerPage)
     let pageNum = 1
@@ -111,7 +125,7 @@ async function listEmotes(interaction) {
             .setTitle('Custom emotes')
             .setDescription(desc)
             .setFooter({ text:`${pageNum}/${numPages}` })
-        interaction.followUp({ embeds: [embed] })
+        await interaction.followUp({ embeds: [embed] })
         pageNum++
         emoteArray = emoteArray.slice(emotesPerPage)
     }
@@ -123,30 +137,32 @@ async function addCustomEmote(interaction) {
 
     //Make sure standard ce commands aren't added
     if (Object.keys(subCommands).includes(name.toUpperCase())) {
-        interaction.followUp('Now listen here you lil shit');
-        return;
+        await interaction.followUp('Now listen here you lil shit')
+        return
     }
 
     // Check if custom emote already exists
-    const output = await customEmoteList.callEmote(name);
-    if (output != null) interaction.followUp('Emote shortcut already in use');
+    const index = await EmoteCache.find(name)
+    if (index) await interaction.followUp('Emote shortcut already in use')
     else {
         //Add custom emote to the DB
-        const addSuccess = await customEmoteList.addEmote(name, value);
-        if (addSuccess) interaction.followUp(`Added command.`);
-        else interaction.followUp('Failed to add command.');
+        const addSuccess = await EmoteCache.add(name, value)
+        // Return results
+        if (addSuccess) await interaction.followUp(`Added command.`)
+        else await interaction.followUp('Failed to add command.')
     }
 }
 
 async function removeCustomEmote(interaction) {
     const name = interaction.options.getString(stringOptions.NAME)
     //Check if custom emote exists in the DB
-    const emote = await customEmoteList.callEmote(name);
-    if (emote === null) interaction.followUp(`Custom Emote doesn\'t exist in the database: ${name}`);
+    const index = await EmoteCache.find(name)
+    if (!index) await interaction.followUp(`Custom Emote doesn\'t exist in the database: ${name}`)
     else {
         //Remove custom emote from DB
-        const removeSuccess = await customEmoteList.removeEmote(name);
-        if (removeSuccess) interaction.followUp(`Removed command \'${name}\'`);
-        else interaction.followUp('Failed to remove command.');
+        const removeSuccess = await EmoteCache.remove(name)
+        // Return results
+        if (removeSuccess) await interaction.followUp(`Removed command \'${name}\'`)
+        else await interaction.followUp('Failed to remove command.')
     }
 }

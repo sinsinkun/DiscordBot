@@ -35,7 +35,6 @@ client.once('ready', () => {
 client.login(process.env.BOT_TOKEN);
 
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
 
 	const command = interaction.client.commands.get(interaction.commandName);
 
@@ -45,18 +44,20 @@ client.on(Events.InteractionCreate, async interaction => {
 	}
 
 	try {
-		await command.execute(interaction);
+		if (interaction.isAutocomplete()) {
+			await command.autocomplete(interaction);
+		} else await command.execute(interaction);
 	} catch (error) {
 		console.error(error);
 		if (interaction.replied || interaction.deferred) {
 			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
 	}
 });
 
-client.on('messageCreate', async message => {
+client.on(Events.MessageCreate, async message => {
 	//full chat log <--disabled chat log for clearer error logging-->
 	//console.log(message.channel.name + ', ' + message.author.username + ': ' + message.content);
 
