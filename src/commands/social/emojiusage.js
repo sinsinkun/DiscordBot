@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, ChannelType } = require('discord.js')
 const DiscordUser = require('../../common/data/user');
 const DiscordServer = require('../../common/data/server');
 
@@ -26,6 +26,10 @@ module.exports = {
 };
 
 async function emojiUsage(interaction) {
+    if (!interaction.guild.available || interaction.channel.type !== ChannelType.GuildText) {
+        // This is an error.
+        return;
+    }
     try {
         const fetchedUser = interaction.options.getUser('user')
         const order = interaction.options.getString('order') || 'DESC'
