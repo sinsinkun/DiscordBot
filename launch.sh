@@ -3,8 +3,12 @@
 echo "Adding env variables..."
 source add_env.sh
 
+echo "Updating commands on discord..."
+npm run "deploy-commands"
+wait
+
 echo "Launching bot-chan..."
-npm run deploy-commands
+node index.js
 wait
 
 echo "Godspeed o7"
