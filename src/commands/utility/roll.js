@@ -1,18 +1,30 @@
-const name = 'roll';
-const description = 'Rolls die or flips coin.';
-const how2use = '!roll for coin flip. !roll $x% to roll $ die with % sides each';
+const { SlashCommandBuilder } = require('discord.js');
 
-function roll({ message, args }){
-    if (args.length < 1) {
-        // dice roll
+module.exports = {
+	data: new SlashCommandBuilder()
+		.setName('roll')
+		.setDescription('Rolls die or flips coin. Defaults to coin flip.')
+        .addStringOption(option => 
+            option
+                .setName('dice')
+                .setDescription('$x% to roll $ die with % sides each')),
+	async execute(interaction) {
+        await roll(interaction)
+	},
+};
+
+async function roll(interaction){
+    const dice = interaction.options.getString('dice')
+    if (!dice) {
+        // coin flip
         const x = Math.round(Math.random());
-        if (x === 1) message.channel.send('Heads');
-        else message.channel.send('Tails');
+        if (x === 1) await interaction.reply('Heads');
+        else await interaction.reply('Tails');
     }
-    else if (args.length === 1) {
-        const argsChars = [...args[0]];
+    else if (dice) {
+        const argsChars = [...dice];
         if (argsChars[0] === 'x' || argsChars[argsChars.length-1] === 'x' || argsChars.length < 3) {
-            message.channel.send('Error calling command. Please use proper syntax.');
+            await interaction.reply('Error calling command. Please use proper syntax.');
         }
         else {
             //use x to split sides
@@ -28,7 +40,7 @@ function roll({ message, args }){
             console.log(`${numDie} x ${dieSides}`);
             //exception for too large numbers
             if (numDie > 10000 || dieSides > 10000) {
-                message.channel.send('<:ah:732553833397354556>');
+                await interaction.reply('<:ah:732553833397354556>');
                 return;
             }
             //calculate total
@@ -43,13 +55,8 @@ function roll({ message, args }){
             dieArray.forEach(dieVal => dieArrayStr += `${dieVal}, `);
             dieArrayStr = dieArrayStr.slice(0,-2);
             dieArrayStr += `\ntotal sum: ${dieSum}`;
-            message.channel.send(dieArrayStr);
+            await interaction.reply(dieArrayStr);
         }
     }
-    else message.channel.send('Error calling command. Please use proper syntax.');
+    else await interaction.reply('Error calling command. Please use proper syntax.');
 }
-
-module.exports.name = name;
-module.exports.description = description;
-module.exports.how2use = how2use;
-module.exports.execute = roll;
