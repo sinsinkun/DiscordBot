@@ -1,3 +1,4 @@
+const { Agent } = require('https')
 const AWS = require('aws-sdk')
 
 AWS.config.update({
@@ -8,7 +9,10 @@ class DatabaseClient {
     constructor({ tableName, region }) {
         this._tableName = tableName;
         const service = new AWS.DynamoDB({maxRetries: 6})
-        this._documentClient = new AWS.DynamoDB.DocumentClient({service, region})
+        const agent = new Agent({
+            keepAlive: true
+          });
+        this._documentClient = new AWS.DynamoDB.DocumentClient({service, region, httpOptions: { agent }})
     }
 
     async getById(documentId) {
