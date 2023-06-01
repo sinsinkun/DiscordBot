@@ -9,6 +9,6 @@ module.exports = {
                 .setName('value')
                 .setDescription('Value to be echoed')),
 	async execute(interaction) {
-        interaction.reply(interaction.options.getString('value') || 'echo')
+        await interaction.reply(interaction.options.getString('value') || 'echo')
 	},
 };

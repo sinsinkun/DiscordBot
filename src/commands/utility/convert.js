@@ -49,12 +49,12 @@ async function convert(interaction) {
 			parsedUnit = "IN"
 		}
 		if (isNaN(parsedValue)) {
-			interaction.reply("Invalid value")
+			await interaction.reply("Invalid value")
 			return
 		};
 		const output = convertByUnit(parsedValue, parsedUnit)
 		if (output) {
-			interaction.reply(output)
+			await interaction.reply(output)
 			return
 		}
 	}
@@ -70,16 +70,16 @@ async function convert(interaction) {
 		unit = "IN"
 	}
 	if (isNaN(parsedValue)) { 
-		interaction.reply("Invalid value")
+		await interaction.reply("Invalid value")
 		return
 	}
 	const output = convertByUnit(value, unit)
 	if (output) {
-		interaction.reply(output)
+		await interaction.reply(output)
 		return
 	} else {
 		// could not find valid input
-		interaction.reply("Invalid input")
+		await interaction.reply("Invalid input")
 		return
 	}
 }
