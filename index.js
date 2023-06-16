@@ -1,6 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Collection, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const { Player } = require('discord-player');
 const { YoutubeExtractor } = require('@discord-player/extractor')
 const Discord = require('discord.js');
@@ -90,10 +90,30 @@ async function logUsage(message, discordData) {
 
 /////// Player Setup ///////
 
-const player = new Player(client);
+const player = new Player(client, { ytdlOptions: {quality: 'highestaudio', filter: 'audioonly'}});
 
 // this event is emitted whenever discord-player starts to play a track
 player.events.on('playerStart', (queue, track) => {
     // we will later define queue.metadata object while creating the queue
-    queue.metadata.channel.send(`Started playing **${track.title}**!`);
+	try {
+		const message = new EmbedBuilder()
+		.setTitle(track.title)
+		.setAuthor({name: track.author})
+		.setThumbnail(track.thumbnail)
+		.setFields(
+			[{
+				name: 'Duration',
+				value: track.duration,
+				inline: true
+			},
+			{
+				name: 'Requested by',
+				value: track.requestedBy.username,
+				inline: true
+			}])
+		.setURL(track.url)
+		queue.metadata.channel.send({ embeds: [message]});
+	} catch (error) {
+		queue.metadata.channel.send(`Error: ${error}`);
+	}
 });
