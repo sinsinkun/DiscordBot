@@ -1,12 +1,16 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Player } = require('discord-player');
+const { YoutubeExtractor } = require('@discord-player/extractor')
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
-	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent]});
+	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent,
+	GatewayIntentBits.GuildVoiceStates]});
 
+/////// Client setup ///////
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'src/commands');
@@ -27,8 +31,9 @@ for (const folder of commandFolders) {
 	}
 }
 
-client.once('ready', () => {
+client.once('ready', async () => {
 	console.log('Ready!');
+	await player.extractors.register(YoutubeExtractor, {});
 });
 
 client.login(process.env.BOT_TOKEN);
@@ -82,3 +87,13 @@ async function logUsage(message, discordData) {
 	await discordData.server.logEmojiUsage(message);
 	await discordData.server.logStickerUsage(message);
 }
+
+/////// Player Setup ///////
+
+const player = new Player(client);
+
+// this event is emitted whenever discord-player starts to play a track
+player.events.on('playerStart', (queue, track) => {
+    // we will later define queue.metadata object while creating the queue
+    queue.metadata.channel.send(`Started playing **${track.title}**!`);
+});
