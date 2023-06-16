@@ -1,16 +1,12 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const { Collection, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
-const { Player } = require('discord-player');
-const { YoutubeExtractor } = require('@discord-player/extractor')
+const { Collection, Events, GatewayIntentBits } = require('discord.js');
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
-	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent,
-	GatewayIntentBits.GuildVoiceStates]});
+	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent]});
 
-/////// Client setup ///////
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'src/commands');
@@ -31,9 +27,8 @@ for (const folder of commandFolders) {
 	}
 }
 
-client.once('ready', async () => {
+client.once('ready', () => {
 	console.log('Ready!');
-	await player.extractors.register(YoutubeExtractor, {});
 });
 
 client.login(process.env.BOT_TOKEN);
@@ -87,33 +82,3 @@ async function logUsage(message, discordData) {
 	await discordData.server.logEmojiUsage(message);
 	await discordData.server.logStickerUsage(message);
 }
-
-/////// Player Setup ///////
-
-const player = new Player(client, { ytdlOptions: {quality: 'highestaudio', filter: 'audioonly'}});
-
-// this event is emitted whenever discord-player starts to play a track
-player.events.on('playerStart', (queue, track) => {
-    // we will later define queue.metadata object while creating the queue
-	try {
-		const message = new EmbedBuilder()
-		.setTitle(track.title)
-		.setAuthor({name: track.author})
-		.setThumbnail(track.thumbnail)
-		.setFields(
-			[{
-				name: 'Duration',
-				value: track.duration,
-				inline: true
-			},
-			{
-				name: 'Requested by',
-				value: track.requestedBy.username,
-				inline: true
-			}])
-		.setURL(track.url)
-		queue.metadata.channel.send({ embeds: [message]});
-	} catch (error) {
-		queue.metadata.channel.send(`Error: ${error}`);
-	}
-});
