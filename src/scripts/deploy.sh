@@ -1,5 +1,4 @@
 #!/bin/bash
-
 cd ~/DiscordBot
 sudo git checkout master
 sudo git pull
@@ -23,5 +22,5 @@ else
 echo "No such container"
 fi
 echo "Deploying the updated container"
-sudo docker run -itd -p 3000:3000 --env-file ~/.env --name discord-bot-container --detach discord-bot
+sudo docker run -itd -p 3000:3000 --env-file ~/env --name discord-bot-container --detach discord-bot
 echo "Deployed successfully!"

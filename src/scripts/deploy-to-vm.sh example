@@ -1,1 +1,1 @@
-cat ./deploy.sh | ssh -i path/to/key/here.key username@ipaddress
+plink -i putty-key.ppk user@ip.address -m ./deploy.sh
