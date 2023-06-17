@@ -1,0 +1,1 @@
+cat ./deploy.sh | ssh -i path/to/key/here.key username@ipaddress
