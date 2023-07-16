@@ -53,7 +53,7 @@ async function convert(interaction) {
 		await interaction.reply("Invalid value")
 		return
 	}
-	const output = convertByUnit(value, unit)
+	const output = convertByUnit(parsedValue, parsedUnit)
 	if (output) {
 		await interaction.reply(`${value}${unit ? unit : ""} -> ${output}`)
 		return
