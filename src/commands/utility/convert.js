@@ -37,41 +37,17 @@ async function convert(interaction) {
 	const unit = interaction.options.getString('unit')
 	const value = interaction.options.getString('value')
 	// parse input with unit attached to value
-	if (!unit) {
-		let parsedUnit = value.replace(/[^a-z|^A-Z]/g,"").toUpperCase()
-		let parsedValue = Number(value.replace(/[^0-9\.\-]/g,""))
-		// parse []ft[]in 
-		if (parsedUnit === "FTIN") {
-			const reParse = value.split(/[ft|Ft|FT]/)
-			const ft = Number(reParse[0].replace(/[^0-9\.\-]/g,""))
-			const inches = Number(reParse[2].replace(/[^0-9\.]/g,""))
-			parsedValue = ft*12 + inches
-			parsedUnit = "IN"
-		}
-		if (isNaN(parsedValue)) {
-			await interaction.reply("Invalid value")
-			return
-		};
-		const output = convertByUnit(parsedValue, parsedUnit)
-		if (output) {
-			await interaction.reply(`${value}${unit} -> ${output}`)
-			return
-		} else {
-			// could not find valid input
-			await interaction.reply("Invalid input")
-			return
-		}
-	}
-	// parse input with unit separated from value
-	let parsedValue = Number(value)
+  let parsedUnit = unit ? unit.toUpperCase() : value.replace(/[^a-z|^A-Z]/g,"").toUpperCase();
+  let parsedValue = Number(value.replace(/[^0-9\.\-]/g,""));
 	// parse []ft []in
-	const testForFt = value.replace(/[^a-z,^A-Z]/g,"").toUpperCase()
-	const testForIn = unit
-	if (testForFt === "FT" && testForIn === "IN") {
-		const ft = value
-		const inches = Number(unit.replace(/[^0-9.-]/g,""))
-		value = ft*12 + inches
-		unit = "IN"
+	if (parsedUnit.includes("FT")) {
+    const reParse = value.split(/[ft|Ft|FT]/)
+    const ft = Number(reParse[0].replace(/[^0-9\.\-]/g,""))
+    if (reParse[2]) {
+      const inches = Number(reParse[2].replace(/[^0-9\.]/g,""))
+      parsedValue = ft*12 + inches
+      parsedUnit = "IN"
+    }
 	}
 	if (isNaN(parsedValue)) { 
 		await interaction.reply("Invalid value")
@@ -79,7 +55,7 @@ async function convert(interaction) {
 	}
 	const output = convertByUnit(value, unit)
 	if (output) {
-		await interaction.reply(`${value}${unit} -> ${output}`)
+		await interaction.reply(`${value}${unit ? unit : ""} -> ${output}`)
 		return
 	} else {
 		// could not find valid input
@@ -114,11 +90,11 @@ function convertByUnit(value, unit) {
 			let distIN2 = Math.round(distDec2%12)
 			return `${distFT2}ft ${distIN2}in`
 		case "FT":
-			const distCM = value*30.48
-			return `${distCM}cm`
+			const distM = value*0.3048
+			return `${distM.toFixed(4)}m`
 		case "IN":
 			const distCM2 = value*2.54
-			return `${distCM2}cm`
+			return `${distCM2.toFixed(2)}cm`
 		case "KG":
 			const weightLbs = value*2.2046
 			return `${weightLbs.toFixed(2)}lbs`
