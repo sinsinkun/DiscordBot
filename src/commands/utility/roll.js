@@ -30,9 +30,8 @@ async function roll(interaction){
         else {
             //use d or x to split sides
             const nums = dice.split(/[dx]/);
-            let numDie, dieSides;
-            numDie = parseInt(nums[0]);
-            dieSides = parseInt(nums[1]);
+            const numDie = parseInt(nums[0]);
+            const dieSides = parseInt(nums[1]);
             console.log(`${numDie} x ${dieSides}`);
             //exception for too large numbers
             if (numDie > 1000 || dieSides > 1000) {
