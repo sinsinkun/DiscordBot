@@ -22,24 +22,19 @@ async function roll(interaction){
         else await interaction.reply('Tails');
     }
     else if (dice) {
-        const argsChars = [...dice];
-        if (argsChars[0] === 'x' || argsChars[argsChars.length-1] === 'x' || argsChars.length < 3) {
+        // number + (d or x) + number
+        const regex = /^[0-9]+?[dx][0-9]+?$/g;
+        if (!regex.test(dice)) {
             await interaction.reply('Error calling command. Please use proper syntax.');
         }
         else {
-            //use x to split sides
-            let numDie, dieSides, temp = '';
-            for (let i=0; i<argsChars.length; i++) {
-                if (argsChars[i] != 'x') temp += argsChars[i];
-                else {
-                    numDie = parseInt(temp); 
-                    temp = '';
-                }
-            }
-            dieSides = parseInt(temp);
+            //use d or x to split sides
+            const nums = dice.split(/[dx]/);
+            const numDie = parseInt(nums[0]);
+            const dieSides = parseInt(nums[1]);
             console.log(`${numDie} x ${dieSides}`);
             //exception for too large numbers
-            if (numDie > 10000 || dieSides > 10000) {
+            if (numDie > 1000 || dieSides > 1000) {
                 await interaction.reply('<:ah:732553833397354556>');
                 return;
             }
@@ -51,7 +46,7 @@ async function roll(interaction){
                 dieSum += dieArray[i];
             }
             //compose message
-            let dieArrayStr = '';
+            let dieArrayStr = `Rolling ${dice}:\n`;
             dieArray.forEach(dieVal => dieArrayStr += `${dieVal}, `);
             dieArrayStr = dieArrayStr.slice(0,-2);
             dieArrayStr += `\ntotal sum: ${dieSum}`;
