@@ -1,8 +1,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const axios = require('axios');
 const { Collection, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const { Player } = require('discord-player');
 const { YoutubeExtractor } = require('@discord-player/extractor')
+const TwitterScraper = require('./src/passive/twitter-scrape');
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
@@ -64,6 +66,25 @@ client.on(Events.InteractionCreate, async interaction => {
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	
+	const url = TwitterScraper.getUrlIfAny(message.content);
+	try {
+		if (url) {
+			const content = await TwitterScraper.scrapeContent(url);
+			const attachment = new Discord.AttachmentBuilder().setFile(content.result.ogVideo[0].url)
+			await message.channel.send({files: [attachment], embeds: [new EmbedBuilder()
+			.setColor('#0099ff')
+			.setTitle(content.result.ogTitle)
+			.setDescription(content.result.ogDescription)
+			.addFields([
+				{
+					name: 'Replies',
+					value: 'idk bro look at the tweet'
+				}
+			])]})}	
+	} catch (error) {
+		console.log(error);
+	}
+
 	// log emoji usage
 	const discordData = await getDiscordData(message);
 	await logUsage(message, discordData);
