@@ -70,17 +70,20 @@ client.on(Events.MessageCreate, async message => {
 	try {
 		if (url) {
 			const content = await TwitterScraper.scrapeContent(url);
-			const attachment = new Discord.AttachmentBuilder().setFile(content.result.ogVideo[0].url)
-			await message.channel.send({files: [attachment], embeds: [new EmbedBuilder()
-			.setColor('#0099ff')
-			.setTitle(content.result.ogTitle)
-			.setDescription(content.result.ogDescription)
-			.addFields([
-				{
-					name: 'Replies',
-					value: 'idk bro look at the tweet'
-				}
-			])]})}	
+			const media = content.result.ogVideo ? content.result.ogVideo[0].url : content.result.ogImage ? TwitterScraper.pullImagesFromMosaic(content.result.ogImage[0].url) : null
+			const files = media.length ? media.map(x => { return new Discord.AttachmentBuilder().setFile(x)}) : [new Discord.AttachmentBuilder().setFile(media)]
+			await message.channel.send({files, embeds: [new EmbedBuilder()
+				.setColor('#0099ff')
+				.setTitle(content.result.ogTitle)
+				.setDescription(content.result.ogDescription)
+				.addFields([
+					{
+						name: 'Replies',
+						value: 'idk bro look at the tweet'
+					}
+				])]
+			})
+		}
 	} catch (error) {
 		console.log(error);
 	}
