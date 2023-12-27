@@ -1,6 +1,5 @@
 const fs = require('node:fs');
 const path = require('node:path');
-const axios = require('axios');
 const { Collection, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const { Player } = require('discord-player');
 const { YoutubeExtractor } = require('@discord-player/extractor')
