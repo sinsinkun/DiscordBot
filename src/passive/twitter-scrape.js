@@ -1,6 +1,6 @@
 const ogs = require('open-graph-scraper');
 
-const regExp = /((http|https):){0,1}\/\/(www\.){0,1}(twitter|x)\.com\/(?<user>[a-z0-9_-]+)\/(status(es){0,1})\/(?<id>[\d]+)/i
+const regExp = /((http|https):){0,1}\/\/(www\.){0,1}(twitter|x)\.com\/(?<user>[a-z0-9_-]+)\/(status(es){0,1})\/(?<id>[\d]+)/i;
 
 /**
  * @typedef {Object} ScrapedContent
@@ -22,7 +22,7 @@ async function scrapeContent(url) {
     const options = {
         url,
         fetchOptions: { headers: { 'user-agent': userAgent } }
-    }
+    };
     const response = await ogs(options);
     return {
         success: !response.error,

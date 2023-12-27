@@ -13,13 +13,13 @@ class TwitterData {
      * Return object can be used directly in a channel.send() discord function.
      */
     ConstructDiscordMessage() {
-        const files = this.content.map(x => { return new AttachmentBuilder().setFile(x)})
+        const files = this.content.map(x => { return new AttachmentBuilder().setFile(x)});
         return {files, embeds: [new EmbedBuilder()
             .setColor('#0099ff')
             .setTitle(this.title)
             .setURL(this.url.split('/').slice(0, 4).join('/'))
             .setDescription(this.description)]
-        }
+        };
     }
 }
 
@@ -42,4 +42,4 @@ function pullImagesFromMosaic(url) {
     return ids.map(id => { return `https://pbs.twimg.com/media/${id}.jpg`});
 }
 
-module.exports = TwitterData
+module.exports = TwitterData;

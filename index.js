@@ -7,7 +7,7 @@ const { YoutubeExtractor } = require('@discord-player/extractor')
 const TwitterScraper = require('./src/passive/twitter-scrape');
 const TwitterData = require('./src/common/data/twitter');
 const Discord = require('discord.js');
-const DiscordUser = require('./src/common/data/user')
+const DiscordUser = require('./src/common/data/user');
 const DiscordServer = require('./src/common/data/server');
 const client = new Discord.Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, 
 	GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.MessageContent,
@@ -71,12 +71,12 @@ client.on(Events.MessageCreate, async message => {
 		const url = TwitterScraper.getUrlIfAny(message.content);
 		if (url) {
 			const content = await TwitterScraper.scrapeContent(url);
-			const data = new TwitterData(content)
-			await message.channel.send(data.ConstructDiscordMessage())
+			const data = new TwitterData(content);
+			await message.channel.send(data.ConstructDiscordMessage());
 		}
 	} catch (error) {
 		console.log(error);
-		await message.channel.send("Weird twitter link. Check yourself before you wreck yourself. <:zura:540212494434697236>")
+		await message.channel.send("Weird twitter link. Check yourself before you wreck yourself. <:zura:540212494434697236>");
 	}
 
 	// log emoji usage
