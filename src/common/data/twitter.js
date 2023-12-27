@@ -8,6 +8,10 @@ class TwitterData {
         this.url = scrapedContent.url;
     }
 
+    /**
+     * Constructs a discord embed message with the attached files of videos or images, depending on twitter data scraped.
+     * Return object can be used directly in a channel.send() discord function.
+     */
     ConstructDiscordMessage() {
         const files = this.content.map(x => { return new AttachmentBuilder().setFile(x)})
         return {files, embeds: [new EmbedBuilder()

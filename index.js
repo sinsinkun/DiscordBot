@@ -68,7 +68,7 @@ client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	
 	try {
-		const url = TwitterScraper.getUrlIfAny(message.content); // Uses regex to find twitter or x url in message
+		const url = TwitterScraper.getUrlIfAny(message.content);
 		if (url) {
 			const content = await TwitterScraper.scrapeContent(url);
 			const data = new TwitterData(content)
@@ -76,6 +76,7 @@ client.on(Events.MessageCreate, async message => {
 		}
 	} catch (error) {
 		console.log(error);
+		await message.channel.send("Weird twitter link. Check yourself before you wreck yourself. <:zura:540212494434697236>")
 	}
 
 	// log emoji usage

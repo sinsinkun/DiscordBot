@@ -34,6 +34,11 @@ async function scrapeContent(url) {
     };
 }
 
+/**
+ * Uses regex to detect twitter.com or x.com URL in message. Returns the fxtwitter equivalent URL.
+ * @param {string} url 
+ * @returns {string}
+ */
 function getUrlIfAny(url) {
     const content = regExp.exec(url);
     return content?.[0].replace(/(x.com|twitter.com)/, 'fxtwitter.com');
