@@ -5,6 +5,7 @@ const { Collection, Events, GatewayIntentBits, EmbedBuilder } = require('discord
 const { Player } = require('discord-player');
 const { YoutubeExtractor } = require('@discord-player/extractor')
 const TwitterScraper = require('./src/passive/twitter-scrape');
+const TwitterData = require('./src/common/data/twitter');
 const Discord = require('discord.js');
 const DiscordUser = require('./src/common/data/user')
 const DiscordServer = require('./src/common/data/server');
@@ -66,23 +67,12 @@ client.on(Events.InteractionCreate, async interaction => {
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	
-	const url = TwitterScraper.getUrlIfAny(message.content);
 	try {
+		const url = TwitterScraper.getUrlIfAny(message.content); // Uses regex to find twitter or x url in message
 		if (url) {
 			const content = await TwitterScraper.scrapeContent(url);
-			const media = content.result.ogVideo ? content.result.ogVideo[0].url : content.result.ogImage ? TwitterScraper.pullImagesFromMosaic(content.result.ogImage[0].url) : null
-			const files = media.length ? media.map(x => { return new Discord.AttachmentBuilder().setFile(x)}) : [new Discord.AttachmentBuilder().setFile(media)]
-			await message.channel.send({files, embeds: [new EmbedBuilder()
-				.setColor('#0099ff')
-				.setTitle(content.result.ogTitle)
-				.setDescription(content.result.ogDescription)
-				.addFields([
-					{
-						name: 'Replies',
-						value: 'idk bro look at the tweet'
-					}
-				])]
-			})
+			const data = new TwitterData(content)
+			await message.channel.send(data.ConstructDiscordMessage())
 		}
 	} catch (error) {
 		console.log(error);
