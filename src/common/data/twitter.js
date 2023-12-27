@@ -3,7 +3,7 @@ const { EmbedBuilder, AttachmentBuilder } = require('discord.js');
 class TwitterData {
     constructor(scrapedContent) {
         this.title = scrapedContent.title;
-        this.description = scrapedContent.description;
+        this.description = scrapedContent.description || null;
         this.content = ConstructContent(scrapedContent.video || scrapedContent.image);
         this.url = scrapedContent.url;
     }
