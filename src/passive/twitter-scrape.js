@@ -1,6 +1,7 @@
 const ogs = require('open-graph-scraper');
 
 const regExp = /((http|https):){0,1}\/\/(www\.){0,1}(twitter|x)\.com\/(?<user>[a-z0-9_-]+)\/(status(es){0,1})\/(?<id>[\d]+)/i;
+var toggled = false;
 
 /**
  * @typedef {Object} ScrapedContent
@@ -44,4 +45,4 @@ function getUrlIfAny(url) {
     return content?.[0].replace(/(x.com|twitter.com)/, 'fxtwitter.com');
 }
 
-module.exports = { scrapeContent, getUrlIfAny };
+module.exports = { scrapeContent, getUrlIfAny, toggled };
