@@ -66,16 +66,18 @@ client.on(Events.InteractionCreate, async interaction => {
 client.on(Events.MessageCreate, async message => {
 	if (message.author.bot) return;
 	
-	try {
-		const url = TwitterScraper.getUrlIfAny(message.content);
-		if (url) {
-			const content = await TwitterScraper.scrapeContent(url);
-			const data = new TwitterData(content);
-			await message.channel.send(data.ConstructDiscordMessage());
+	if (TwitterScraper.toggled) {
+		try {
+			const url = TwitterScraper.getUrlIfAny(message.content);
+			if (url) {
+				const content = await TwitterScraper.scrapeContent(url);
+				const data = new TwitterData(content);
+				await message.channel.send(data.ConstructDiscordMessage());
+			}
+		} catch (error) {
+			console.log(error);
+			await message.channel.send("Weird twitter link. Check yourself before you wreck yourself. <:zura:540212494434697236>");
 		}
-	} catch (error) {
-		console.log(error);
-		await message.channel.send("Weird twitter link. Check yourself before you wreck yourself. <:zura:540212494434697236>");
 	}
 
 	// log emoji usage
