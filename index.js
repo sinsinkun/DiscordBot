@@ -1,5 +1,3 @@
-process.env.DP_FORCE_YTDL_MOD = "@distube/ytdl-core";
-
 const fs = require("node:fs");
 const path = require("node:path");
 const {
