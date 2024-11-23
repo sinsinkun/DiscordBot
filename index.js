@@ -7,6 +7,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { Player } = require("discord-player");
+const { YoutubeiExtractor } = require("discord-player-youtubei");
 const TwitterScraper = require("./src/passive/twitter-scrape");
 const TwitterData = require("./src/common/data/twitter");
 const Discord = require("discord.js");
@@ -48,8 +49,9 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
+  await player.extractors.register(YoutubeiExtractor, {});
+  await player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
   console.log("Ready!");
-  await player.extractors.loadDefault();
 });
 
 client.login(process.env.BOT_TOKEN);
@@ -133,7 +135,11 @@ async function logUsage(message, discordData) {
 /////// Player Setup ///////
 
 const player = new Player(client, {
-  ytdlOptions: { quality: "highestaudio", filter: "audioonly" },
+  skipFFmpeg: true,
+  ytdlOptions: {
+    filter: "audioonly",
+    quality: "highestaudio",
+  },
 });
 
 // this event is emitted whenever discord-player starts to play a track
