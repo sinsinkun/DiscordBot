@@ -49,7 +49,14 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
-  await player.extractors.register(SpotifyExtractor, {});
+  await player.extractors.loadDefault(
+    (ext) =>
+      ext !== "YouTubeExtractor" ||
+      "SoundCloudExtractor" ||
+      "VimeoExtractor" ||
+      "ReverbnationExtractor" ||
+      "AppleMusicExtractor"
+  );
   console.log("Ready!");
 });
 
@@ -134,7 +141,6 @@ async function logUsage(message, discordData) {
 /////// Player Setup ///////
 
 const player = new Player(client, {
-  skipFFmpeg: true,
   ytdlOptions: {
     filter: "audioonly",
     quality: "highestaudio",
