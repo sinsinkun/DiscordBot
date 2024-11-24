@@ -1,6 +1,8 @@
 FROM node:22.11
-RUN apk add g++ make py3-pip
-RUN apk update && apk add ffmpeg
+RUN apt-get update || : && apt-get install python -y
+RUN apt-get install g++
+RUN apt update && apt upgrade
+RUN apt install ffmpeg
 WORKDIR /app
 COPY . .
 RUN npm install --force
