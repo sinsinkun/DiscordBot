@@ -49,7 +49,7 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
-  await player.extractors.loadDefault();
+  await player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
   console.log("Ready!");
 });
 
