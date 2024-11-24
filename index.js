@@ -140,12 +140,7 @@ async function logUsage(message, discordData) {
 
 /////// Player Setup ///////
 
-const player = new Player(client, {
-  ytdlOptions: {
-    filter: "audioonly",
-    quality: "highestaudio",
-  },
-});
+const player = new Player(client);
 
 // this event is emitted whenever discord-player starts to play a track
 player.events.on("playerStart", (queue, track) => {
