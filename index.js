@@ -49,14 +49,7 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
-  await player.extractors.loadDefault(
-    (ext) =>
-      ext !== "YouTubeExtractor" ||
-      "SoundCloudExtractor" ||
-      "VimeoExtractor" ||
-      "ReverbnationExtractor" ||
-      "AppleMusicExtractor"
-  );
+  await player.extractors.loadDefault();
   console.log("Ready!");
 });
 
