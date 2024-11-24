@@ -1,4 +1,4 @@
-FROM node:22.11-alpine
+FROM node:22.11
 RUN apk add g++ make py3-pip
 RUN apk update && apk add ffmpeg
 WORKDIR /app
