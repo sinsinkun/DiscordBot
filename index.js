@@ -7,7 +7,7 @@ const {
   EmbedBuilder,
 } = require("discord.js");
 const { Player } = require("discord-player");
-const { YoutubeiExtractor } = require("discord-player-youtubei");
+const { SpotifyExtractor } = require("@discord-player/extractor");
 const TwitterScraper = require("./src/passive/twitter-scrape");
 const TwitterData = require("./src/common/data/twitter");
 const Discord = require("discord.js");
@@ -49,7 +49,7 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
-  await player.extractors.register(YoutubeiExtractor, {});
+  await player.extractors.register(SpotifyExtractor, {});
   await player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
   console.log("Ready!");
 });
