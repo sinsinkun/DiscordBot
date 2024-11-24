@@ -93,6 +93,7 @@ async function play(interaction) {
         metadata: interaction, // we can access this metadata object using queue.metadata later on
         volume: 10,
       },
+      searchEngine: "SPOTIFY_SEARCH",
     });
 
     return interaction.followUp(`**${track.title}** enqueued!`);

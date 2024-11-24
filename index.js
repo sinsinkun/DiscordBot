@@ -50,7 +50,6 @@ for (const folder of commandFolders) {
 
 client.once("ready", async () => {
   await player.extractors.register(SpotifyExtractor, {});
-  await player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
   console.log("Ready!");
 });
 
