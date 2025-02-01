@@ -74,12 +74,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await interaction.followUp({
         content: "There was an error while executing this command!",
         ephemeral: true,
-      });
+      }).catch(e => console.log("Failed to follow up interaction", e));
     } else {
       await interaction.followUp({
         content: "There was an error while executing this command!",
         ephemeral: true,
-      });
+      }).catch(e => console.log("Failed to follow up interaction", e));;
     }
   }
 });
