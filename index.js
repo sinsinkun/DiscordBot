@@ -6,8 +6,6 @@ const {
   GatewayIntentBits,
   EmbedBuilder,
 } = require("discord.js");
-const { Player } = require("discord-player");
-const { YoutubeiExtractor } = require("discord-player-youtubei");
 const TwitterScraper = require("./src/passive/twitter-scrape");
 const TwitterData = require("./src/common/data/twitter");
 const Discord = require("discord.js");
@@ -49,8 +47,6 @@ for (const folder of commandFolders) {
 }
 
 client.once("ready", async () => {
-  await player.extractors.register(YoutubeiExtractor, {});
-  await player.extractors.loadDefault((ext) => ext !== "YouTubeExtractor");
   console.log("Ready!");
 });
 
@@ -71,15 +67,19 @@ client.on(Events.InteractionCreate, async (interaction) => {
   } catch (error) {
     console.error(error);
     if (interaction.replied || interaction.deferred) {
-      await interaction.followUp({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      }).catch(e => console.log("Failed to follow up interaction", e));
+      await interaction
+        .followUp({
+          content: "There was an error while executing this command!",
+          ephemeral: true,
+        })
+        .catch((e) => console.log("Failed to follow up interaction", e));
     } else {
-      await interaction.followUp({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      }).catch(e => console.log("Failed to follow up interaction", e));;
+      await interaction
+        .followUp({
+          content: "There was an error while executing this command!",
+          ephemeral: true,
+        })
+        .catch((e) => console.log("Failed to follow up interaction", e));
     }
   }
 });
@@ -131,40 +131,3 @@ async function logUsage(message, discordData) {
   await discordData.server.logEmojiUsage(message);
   await discordData.server.logStickerUsage(message);
 }
-
-/////// Player Setup ///////
-
-const player = new Player(client, {
-  skipFFmpeg: true,
-  ytdlOptions: {
-    filter: "audioonly",
-    quality: "highestaudio",
-  },
-});
-
-// this event is emitted whenever discord-player starts to play a track
-player.events.on("playerStart", (queue, track) => {
-  // we will later define queue.metadata object while creating the queue
-  try {
-    const message = new EmbedBuilder()
-      .setTitle(track.title)
-      .setAuthor({ name: track.author })
-      .setThumbnail(track.thumbnail)
-      .setFields([
-        {
-          name: "Duration",
-          value: track.duration,
-          inline: true,
-        },
-        {
-          name: "Requested by",
-          value: track.requestedBy.username,
-          inline: true,
-        },
-      ])
-      .setURL(track.url);
-    queue.metadata.channel.send({ embeds: [message] });
-  } catch (error) {
-    queue.metadata.channel.send(`Error: ${error}`);
-  }
-});
