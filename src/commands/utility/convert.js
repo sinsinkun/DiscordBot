@@ -14,14 +14,18 @@ module.exports = {
 				.setName('unit')
 				.setDescription('Unit to be converted')
 				.addChoices(
+					// temperature
 					{ name: 'Celsius', value: 'C'},
 					{ name: 'Farenheit', value: 'F'},
-					{ name: 'Kilometres', value: 'KM'},
-					{ name: 'Miles', value: 'MI'},
+					// distance
+					{ name: 'Millimetres', value: 'MM'},
 					{ name: 'Centimetres', value: 'CM'},
 					{ name: 'Metres', value: 'M'},
+					{ name: 'Kilometres', value: 'KM'},
+					{ name: 'Miles', value: 'MI'},
 					{ name: 'Feet', value: 'FT'},
 					{ name: 'Inches', value: 'IN'},
+					// weight
 					{ name: 'Kilograms', value: 'KG'},
 					{ name: 'Pounds', value: 'LB'},
 					{ name: 'Millilitres', value: 'ML'},
@@ -79,6 +83,9 @@ function convertByUnit(value, unit) {
 		case "MILES":
 			const distKM = value/0.62137
 			return `${distKM.toFixed(2)}km`
+		case "MM":
+			const distINm = value*0.0394
+			return `${distINm}in`
 		case "CM":
 			const distDec = value/2.54
 			let distFT = Math.floor(distDec/12)

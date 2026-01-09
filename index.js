@@ -1,5 +1,6 @@
 const fs = require("node:fs");
 const path = require("node:path");
+require('dotenv').config();
 const {
   Collection,
   Events,
@@ -54,11 +55,13 @@ client.login(process.env.BOT_TOKEN);
 
 client.on(Events.InteractionCreate, async (interaction) => {
   const command = interaction.client.commands.get(interaction.commandName);
+  const now = Date.now();
 
   if (!command) {
-    console.error(`No command matching ${interaction.commandName} was found.`);
+    console.error(`(${now}) No command matching ${interaction.commandName} was found.`);
     return;
   }
+  console.log(`(${now}) Processing command: ${interaction.commandName}`);
 
   try {
     if (interaction.isAutocomplete()) {
