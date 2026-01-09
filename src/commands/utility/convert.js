@@ -85,7 +85,7 @@ function convertByUnit(value, unit) {
 			return `${distKM.toFixed(2)}km`
 		case "MM":
 			const distINm = value*0.0394
-			return `${distINm}in`
+			return `${distINm.toFixed(4)}in`
 		case "CM":
 			const distDec = value/2.54
 			let distFT = Math.floor(distDec/12)
