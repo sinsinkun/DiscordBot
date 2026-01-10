@@ -413,7 +413,7 @@ async function execute(interaction) {
   }
 
   let output = unitIn.convert(value, unitOut.value);
-  interaction.reply(`In development >> ${value}${unitIn.name} -> ${output}`);
+  interaction.reply(`${value}${unitIn.name} -> ${output}`);
 }
 
 module.exports = {
